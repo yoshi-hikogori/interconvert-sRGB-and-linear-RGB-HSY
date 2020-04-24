@@ -1,1 +1,1 @@
-# interconvert-sRGB-and-linear-RGB.github.io
+# interconvert-sRGB-and-linear-RGB
