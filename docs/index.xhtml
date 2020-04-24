@@ -99,25 +99,25 @@ body {
 	<header id="header" class="Header">
 		<p class="Header_text">0.1.0版、最終更新：2020/03/18</p>
 	</header>
-		<main class="Main"><h1 class="Main_h1">色相HまたはsRGBと、相対輝度 (relative luminance) からRGBを求める.xhtml</h1>
-		<p class="Main_beginning">色相 (H) または 24bit sRGB（R、G、B 各 8bit (0–255)）と、相対輝度（Y、0–1）を入力して、<!--
-		-->入力された色相と相対輝度を満たす 24bit sRGB を返します</p>
+		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値・配色属性 HSYの相互変換.xhtml</h1>
+		<p class="Main_beginning">各値を直接またはスライダーでその割合を入力して、<!--
+		-->入力された値を満たす他の値を返します</p>
 		<section id="section01" class="MainSection"><h2 class="MainSection_h2">文書内容1</h2>
 			<p id="p1" class="MainSection_par">ここに説明が入る</p>
 		</section>
 	</main>
 	<form id="form" name="form">
 		<fieldset><legend accesskey="F"><h2>入力欄 (<kbd><kbd class="underline-text">F</kbd></kbd>)</h2></legend>
-			<fieldset><legend accesskey="S">入力の反映形態 (<kbd><kbd class="underline-text">S</kbd></kbd>)</legend>
+			<fieldset><legend accesskey="S"><h3>入力の反映形態 (<kbd><kbd class="underline-text">S</kbd></kbd>)</h3></legend>
 				<p><label><input id="syncGovernorBox" name="syncGovernorBox" type="checkbox" checked="checked" />反映契機設定 - 入力値の反映を入力欄の変更中に同期するか(チェックを外していると入力完了時に一括で反映)</label></p>
 			</fieldset>
-			<fieldset><legend accesskey="C">カラーコード（sRGB 色空間） (<kbd><kbd class="underline-text">C</kbd></kbd>)</legend>
+			<fieldset><legend accesskey="C"><h3>カラーコード（sRGB 色空間） (<kbd><kbd class="underline-text">C</kbd></kbd>)</h3></legend>
 				<p><input id="colorPickInput" name="colorPickInput" type="color" value="#bcbcbc" /></p>
 				<p><label><input id="colorCodeInput" name="colorCodeInput" type="text" value="BCBCBC" pattern="[\s\S]*[#＃]*[0-9a-fA-F０-９ａ-ｆＡ-Ｆ]{3,6}[\s\S]*" />(入力範囲： 000000–FFFFFF または 000–FFF の16進数、先頭の#の有無は自動で補完します)</label></p>
 				<p><label><input id="caseGovernorBox" name="caseGovernorBox" type="checkbox" />letter case設定 - カラーコードを大文字・小文字のいずれかに統一（チェックで小文字）</label></p>
 				<p><label><input id="prefixGovernorBox" name="prefixGovernorBox" type="checkbox" />接頭辞設定 - 出力するカラーコードに接頭辞｢#｣を付けるか（チェックで付ける）</label></p>
 			</fieldset>
-			<fieldset><legend accesskey="X">RGB 各チャンネルの明度 (sRGB 色空間、入力範囲： 0–255 の数値) (<kbd><kbd class="underline-text">X</kbd></kbd>)</legend>
+			<fieldset><legend accesskey="S"><h3>RGB 各チャンネルの明度 (sRGB 色空間、入力範囲： 0–255 の数値) (<kbd><kbd class="underline-text">S</kbd></kbd>)</h3></legend>
 				<p>
 					<label>R: <input id="RNumInput" name='RNumInput' type="number" value="188" max="255" step="any" /></label>
 					<input id="RRangeInput" name="RRangeInput" type="range" value="0.7372549019607844" max="1" step="any" />
@@ -134,7 +134,7 @@ body {
 					<input id="BNormalNumInput" name="BNormalNumInput" type="number" value="0.7372549019607844" max="1" step="any" />
 				</p>
 			</fieldset>
-			<fieldset><legend accesskey="X">線形 RGB 各チャンネルの明度 (線形 RGB 色空間、入力範囲： 0–255 の数値) (<kbd><kbd class="underline-text">X</kbd></kbd>)</legend>
+			<fieldset><legend accesskey="L"><h3>線形 RGB 各チャンネルの明度 (線形 RGB 色空間、入力範囲： 0–255 の数値) (<kbd><kbd class="underline-text">L</kbd></kbd>)</h3></legend>
 				<p>
 					<label>R: <input id="linearRNumInput" name='linearRNumInput' type="number" value="128.23604679830493" max="255" step="any" /></label>
 					<input id="linearRRangeInput" name="linearRRangeInput" type="range" value="0.5028864580325684" max="1" step="any" />
@@ -152,7 +152,7 @@ body {
 				</p>
 			</fieldset>
 			<fieldset>
-				<legend accesskey="I"><h3>色相、飽和度、相対輝度（線形 RGB 色空間） (<kbd><kbd class="underline-text">I</kbd></kbd>)</h3></legend>
+				<legend accesskey="M"><h3>色相 H、飽和度 S、相対輝度 Y（線形 RGB 色空間） (<kbd><kbd class="underline-text">M</kbd></kbd>)</h3></legend>
 				<p>
 					<label>H: <input id="degHNumInput" name="degHNumInput" type="number" value="" max="360" step="any" placeholder="未定義" /></label>
 					<input id="HRangeInput" name="HRangeInput" type="range" value="360" max="360" step="any" />
