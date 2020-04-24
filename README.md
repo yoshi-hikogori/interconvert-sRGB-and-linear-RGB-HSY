@@ -1,2 +1,3 @@
 # interconvert-sRGB-and-linear-RGB-HSY
 ## [**index.xhtml**](https://yoshi-hikogori.github.io/interconvert-sRGB-and-linear-RGB-HSY/)
+*** 作業中につき整合性破綻中……
