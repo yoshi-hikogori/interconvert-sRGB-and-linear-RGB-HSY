@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja" dir="ltr">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>色相HまたはsRGBと、相対輝度 (relative luminance) からRGBを求める.xhtml</title>
+	<meta name="description" content="文書内容の説明" />
+	
+	<style>
+/*<![CDATA[*/
+/* ここから　リセット CSS */
+*, *::before, *::after {
+	box-sizing: border-box;
+}
+
+/* class属性を持つul、ol要素のデフォルトのpaddingを削除、リストスタイルを削除 */
+ul, ol {
+	padding: 0;
+	list-style: none;
+}
+ul:not([class]), ol:not([class]) {
+	display: block;
+	list-style: disc outside none;
+	padding: 0 0 0 40px;
+}
+ol:not([class]) {
+	list-style-type: decimal;
+}
+
+/* デフォルトのmarginを削除 */
+body, h1, h2, h3, h4, p, ul, ol,
+ li, figure, figcaption, blockquote, dl, dd, fieldset {
+	margin: 0;
+}
+ul:not([class]), ol:not([class]) {
+	margin: 1em 0;
+}
+
+:root {
+	scroll-behavior: smooth;
+}
+
+body {
+	text-rendering: optimizeSpeed;
+	line-height: 1.5;
+}
+
+/* class を持たないA要素はデフォルトのスタイルを取得 */
+a:not([class]) {
+	 text-decoration-skip-ink: auto;
+}
+
+img {
+  vertical-align: top;
+}
+
+input, button, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: inherit;
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* リセット CSS　ここまで */
+
+body {
+	min-width: 100%;
+	overflow-wrap: break-word;
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	font-family: "KokoroRegular", "NotoSerifCJKjpRegular", sans-serif, system-ui;
+	text-rendering: geometricPrecision;
+	color: #ffffff;
+	text-shadow: 0 0.25px 0 black, calc(17.5px / 99) calc(17.5px / 99) 0 black, 0.25px 0 0 black, calc(17.5px / 99) calc(-17.5px / 99) 0 black,
+	 0 -0.25px 0 black, calc(-17.5px / 99) calc(-17.5px / 99) 0 black, -0.25px 0 0 black, calc(-17.5px / 99) calc(17.5px / 99) 0 black;
+	background-color: #282828;
+}
+@supports not ((-webkit-text-size-adjust: 100%) or (text-size-adjust: 100%)) {
+	body {
+		-webkit-text-size-adjust: none;
+		text-size-adjust: none;
+	}
+}
+
+/*]]>*/
+	</style>
+</head>
+
+<body>
+	<header id="header" class="Header">
+		<p class="Header_text">0.1.0版、最終更新：2020/03/18</p>
+	</header>
+		<main class="Main"><h1 class="Main_h1">色相HまたはsRGBと、相対輝度 (relative luminance) からRGBを求める.xhtml</h1>
+		<p class="Main_beginning">色相 (H) または 24bit sRGB（R、G、B 各 8bit (0–255)）と、相対輝度（Y、0–1）を入力して、<!--
+		-->入力された色相と相対輝度を満たす 24bit sRGB を返します</p>
+		<section id="section01" class="MainSection"><h2 class="MainSection_h2">文書内容1</h2>
+			<p id="p1" class="MainSection_par">ここに説明が入る</p>
+		</section>
+	</main>
+	<form id="form" name="form">
+		<fieldset><legend accesskey="F"><h2>入力欄 (<kbd><kbd class="underline-text">F</kbd></kbd>)</h2></legend>
+			<fieldset><legend accesskey="S">入力の反映形態 (<kbd><kbd class="underline-text">S</kbd></kbd>)</legend>
+				<p><label><input id="syncGovernorBox" name="syncGovernorBox" type="checkbox" checked="checked" />反映契機設定 - 入力値の反映を入力欄の変更中に同期するか(チェックを外していると入力完了時に一括で反映)</label></p>
+			</fieldset>
+			<fieldset><legend accesskey="C">カラーコード（sRGB 色空間） (<kbd><kbd class="underline-text">C</kbd></kbd>)</legend>
+				<p><input id="colorPickInput" name="colorPickInput" type="color" value="#bcbcbc" /></p>
+				<p><label><input id="colorCodeInput" name="colorCodeInput" type="text" value="BCBCBC" pattern="[\s\S]*[#＃]*[0-9a-fA-F０-９ａ-ｆＡ-Ｆ]{3,6}[\s\S]*" />(入力範囲： 000000–FFFFFF または 000–FFF の16進数、先頭の#の有無は自動で補完します)</label></p>
+				<p><label><input id="caseGovernorBox" name="caseGovernorBox" type="checkbox" />letter case設定 - カラーコードを大文字・小文字のいずれかに統一（チェックで小文字）</label></p>
+				<p><label><input id="prefixGovernorBox" name="prefixGovernorBox" type="checkbox" />接頭辞設定 - 出力するカラーコードに接頭辞｢#｣を付けるか（チェックで付ける）</label></p>
+			</fieldset>
+			<fieldset><legend accesskey="X">R, G, B 各チャンネルの明度 (sRGB 色空間、入力範囲： 0–255 の数値) (<kbd><kbd class="underline-text">X</kbd></kbd>)</legend>
+				<p>
+					<label>R: <input id="RNumInput" name='RNumInput' type="number" value="188" max="255" step="any" /></label>
+					<input id="RRangeInput" name="RRangeInput" type="range" value="0.7372549019607844" max="1" step="any" />
+					<input id="RNormalNumInput" name="RNormalNumInput" type="number" value="0.7372549019607844" max="1" step="any" />
+				</p>
+				<p>
+					<label>G: <input id="GNumInput" name="GNumInput" type="number" value="188" max="255" step="any" /></label>
+					<input id="GRangeInput" name="GRangeInput" type="range" value="0.7372549019607844" max="1" step="any" />
+					<input id="GNormalNumInput" name="GNormalNumInput" type="number" value="0.7372549019607844" max="1" step="any" />
+				</p>
+				<p>
+					<label>B: <input id="BNumInput" name="BNumInput" type="number" value="188" max="255" step="any" /></label>
+					<input id="BRangeInput" name="BRangeInput" type="range" value="0.7372549019607844" max="1" step="any" />
+					<input id="BNormalNumInput" name="BNormalNumInput" type="number" value="0.7372549019607844" max="1" step="any" />
+				</p>
+			</fieldset>
+			<fieldset>
+				<legend accesskey="I"><h3>色相、飽和度、相対輝度（線形 RGB 色空間） (<kbd><kbd class="underline-text">I</kbd></kbd>)</h3></legend>
+				<p>
+					<label>H: <input id="degHNumInput" name="degHNumInput" type="number" value="" max="360" step="any" placeholder="未定義" /></label>
+					<input id="HRangeInput" name="HRangeInput" type="range" value="360" max="360" step="any" />
+					<input id="HNormalNumInput" name="HNormalNumInput" type="number" value="" max="1" step="any" placeholder="未定義" />
+				</p>
+				<p>
+					S: <input id="SRangeInput" name="SRangeInput" type="range" value="0" max="1" step="any" />
+					<input id="SNumInput" name="SNumInput" type="number" value="0" max="1" step="any" />
+				</p>
+				<p>
+					Y: <input id="YRangeInput" name="YRangeInput" type="range" value="0.5028864580325684" max="1" step="any" />
+					<input id="YNumInput" name="YNumInput" type="number" value="0.5028864580325684" max="1" step="any" />
+				</p>
+			</fieldset>
+			<p><input type="submit" id="formSubmit" name="formSubmit" form="form" value="入力値を反映" /></p>
+		</fieldset>
+	</form>
+	<footer>フッタ</footer>
+	
+	<script>
+/*<![CDATA[*/
+
+(()=>{'use strict';try{
+
+const form = document.forms.form,
+syncGovernorBox = form.elements.syncGovernorBox,
+colorPickInput = form.elements.colorPickInput,
+colorCodeInput = form.elements.colorCodeInput,
+caseGovernorBox = form.elements.caseGovernorBox,
+prefixGovernorBox = form.elements.prefixGovernorBox,
+RNumInput = form.elements.RNumInput,
+RRangeInput = form.elements.RRangeInput,
+RNormalNumInput = form.elements.RNormalNumInput,
+GNumInput = form.elements.GNumInput,
+GRangeInput = form.elements.GRangeInput,
+GNormalNumInput = form.elements.GNormalNumInput,
+BNumInput = form.elements.BNumInput,
+BRangeInput = form.elements.BRangeInput,
+BNormalNumInput = form.elements.BNormalNumInput,
+degHNumInput = form.elements.degHNumInput,
+HRangeInput = form.elements.HRangeInput,
+HNormalNumInput = form.elements.HNormalNumInput,
+YRangeInput = form.elements.YRangeInput,
+YNumInput = form.elements.YNumInput,
+syncCouldListeners = new Map(),
+eventOptions = {passive: true},
+addAsyncListener = (target, listener, type = 'input')=>{
+	target.addEventListener(type, listener, eventOptions);
+},
+addSyncCouldListener = (target, listener, type = 'input')=>{
+	target.addEventListener(type, listener, eventOptions);
+	syncCouldListeners.set(target, [type, listener]);
+},
+toggleSyncMode = e=>{
+	shouldSync = syncGovernorBox.checked;
+	if(shouldSync === true) {
+		for(const [target, [type, listener]] of syncCouldListeners) {
+			target.addEventListener(type, listener, eventOptions);
+		}
+		return undefined;
+	}
+	for(const [target, [type, listener]] of syncCouldListeners) {
+		target.removeEventListener(type, listener, eventOptions);
+	}
+},
+colorPickInterfaces = e=>{
+	combinedHexCode = colorPickInput.value.slice(1);
+	colorCodeHexValue = +`0x${combinedHexCode}`;
+	if(outputsLowerCase === false) {
+		if(prefixesColorCode === false) return colorCodeInput.value = combinedHexCode.toUpperCase();
+		return colorCodeInput.value = `#${combinedHexCode.toUpperCase()}`;
+	}
+	if(prefixesColorCode === false) return colorCodeInput.value = combinedHexCode;
+	colorCodeInput.value = `#${combinedHexCode}`;
+},
+colorCodeInterfaces = e=>{
+	if(colorCodeInput.checkValidity() === false) return undefined;
+	combinedHexCode = /(?<=#*|＃*)([0-9a-fA-F０-９ａ-ｆＡ-Ｆ]{3,6})/.exec(colorCodeInput.value)[1].replace(
+		/[０-９ａ-ｆＡ-Ｆ]/g,
+		(s)=> String.fromCharCode(s.charCodeAt(0) - 65248)
+	);
+	if(combinedHexCode.length === 6) {
+		colorPickInput.value = `#${combinedHexCode}`;
+		colorCodeHexValue = +`0x${combinedHexCode}`;
+		separatedHexCode = [
+			colorCodeHexValue>>>16,
+			colorCodeHexValue>>>8 & 0x00ff,
+			colorCodeHexValue & 0x0000ff
+		];
+		return undefined;
+	}
+	separatedHexCode = [
+		`${combinedHexCode[0]}${combinedHexCode[0]}`,
+		`${combinedHexCode[1]}${combinedHexCode[1]}`,
+		`${combinedHexCode[2]}${combinedHexCode[2]}`
+	];
+	colorPickInput.value = `#${separatedHexCode[0]}${separatedHexCode[1]}${separatedHexCode[2]}`;
+	separatedHexCode = [
+		+`0x${separatedHexCode[0]}`,
+		+`0x${separatedHexCode[1]}`,
+		+`0x${separatedHexCode[2]}`
+	];
+	colorCodeHexValue = (separatedHexCode[0]<<16) + (separatedHexCode[1]<<8) + separatedHexCode[2];
+},
+toggleCaseMode = e=>{
+	outputsLowerCase = caseGovernorBox.checked;
+	if(outputsLowerCase) return colorCodeInput.value = colorCodeInput.value.toLowerCase();
+	colorCodeInput.value = colorCodeInput.value.toUpperCase();
+},
+togglePrefixMode = e=>{
+	prefixesColorCode = prefixGovernorBox.checked;
+	if(prefixesColorCode) return colorCodeInput.value = `#${colorCodeInput.value}`;
+	colorCodeInput.value = colorCodeInput.value.slice(1);
+},
+RNumInterfaces = e=>{
+	if(RNumInput.value === '' || RNumInput.checkValidity() === false) return undefined;
+	Rs = RNumInput.valueAsNumber;
+	RsNormal = Rs/255;
+	RRangeInput.value = RNormalNumInput.value = RsNormal;
+},
+RRangeInterfaces = e=>{
+	if(RRangeInput.checkValidity() === false) return undefined;
+	RsNormal = RRangeInput.valueAsNumber;
+	Rs = 255*RsNormal;
+	RNumInput.value = Rs;
+	RNormalNumInput.value = RsNormal;
+},
+RNormalInterfaces = e=>{
+	if(RNormalNumInput.value === '' || RNormalNumInput.checkValidity() === false) return undefined;
+	RsNormal = RNormalNumInput.valueAsNumber;
+	Rs = 255*RsNormal;
+	RNumInput.value = Rs;
+	RRangeInput.value = RsNormal;
+},
+GNumInterfaces = e=>{
+	if(GNumInput.value === '' || GNumInput.checkValidity() === false) return undefined;
+	Gs = GNumInput.valueAsNumber;
+	GsNormal = Gs/255;
+	GRangeInput.value = GNormalNumInput.value = GsNormal;
+},
+GRangeInterfaces = e=>{
+	if(GRangeInput.checkValidity() === false) return undefined;
+	GsNormal = GRangeInput.valueAsNumber;
+	Gs = 255*GsNormal;
+	GNumInput.value = Gs;
+	GNormalNumInput.value = GsNormal;
+},
+GNormalInterfaces = e=>{
+	if(GNormalNumInput.value === '' || GNormalNumInput.checkValidity() === false) return undefined;
+	GsNormal = GNormalNumInput.valueAsNumber;
+	Gs = 255*GsNormal;
+	GNumInput.value = Gs;
+	GRangeInput.value = GsNormal;
+},
+BNumInterfaces = e=>{
+	if(BNumInput.value === '' || BNumInput.checkValidity() === false) return undefined;
+	Bs = BNumInput.valueAsNumber;
+	BsNormal = Bs/255;
+	BRangeInput.value = BNormalNumInput.value = BsNormal;
+},
+BRangeInterfaces = e=>{
+	if(BRangeInput.checkValidity() === false) return undefined;
+	BsNormal = BRangeInput.valueAsNumber;
+	Bs = 255*BsNormal;
+	BNumInput.value = Bs;
+	BNormalNumInput.value = BsNormal;
+},
+BNormalInterfaces = e=>{
+	if(BNormalNumInput.value === '' || BNormalNumInput.checkValidity() === false) return undefined;
+	BsNormal = BNormalNumInput.valueAsNumber;
+	Bs = 255*BsNormal;
+	BNumInput.value = Bs;
+	BRangeInput.value = BsNormal;
+},
+degHInterfaces = e=>{
+	if(degHNumInput.checkValidity() === false) return undefined;
+	degH = HRangeInput.value = degHNumInput.valueAsNumber;
+	if(degH === 360 || degHNumInput.value === '') {
+		H = degH = null;
+		return degHNumInput.value = HNormalNumInput.value = '';
+	}
+	H = degH/360;
+	HNormalNumInput.value = H;
+},
+HRangeInterfaces = e=>{
+	if(HRangeInput.checkValidity() === false) return undefined;
+	degH = HRangeInput.valueAsNumber;
+	if(degH === 360) {
+		H = degH = null;
+		return degHNumInput.value = HNormalNumInput.value = '';
+	}
+	H = degH/360;
+	degHNumInput.value = degH;
+	HNormalNumInput.value = H;
+},
+HNormalInterfaces = e=>{
+	if(HNormalNumInput.checkValidity() === false) return undefined;
+	H = HNormalNumInput.valueAsNumber;
+	if(H === 1 || HNormalNumInput.value === '') {
+		H = degH = null;
+		HRangeInput.value = 360;
+		return degHNumInput.value = HNormalNumInput.value = '';
+	}
+	degH = 360*H;
+	degHNumInput.value = HRangeInput.value = degH;
+},
+YRangeInterfaces = e=>{
+	if(YRangeInput.checkValidity() === false) return undefined;
+	Y = YRangeInput.valueAsNumber;
+	YNumInput.value = Y;
+},
+YNormalInterfaces = e=>{
+	if(YNumInput.value === '' || YNumInput.checkValidity() === false) return undefined;
+	Y = YNumInput.valueAsNumber;
+	YRangeInput.value = Y;
+},
+updateSrgbByCode = ()=>{
+	Rs = colorCodeHexValue>>>16;
+	Gs = colorCodeHexValue>>>8 & 0x00ff;
+	Bs = colorCodeHexValue & 0x0000ff;
+	RsNormal = Rs/255;
+	GsNormal = Gs/255;
+	BsNormal = Bs/255;
+	RNumInput.value = Rs;
+	GNumInput.value = Gs;
+	BNumInput.value = Bs;
+	RRangeInput.value = RNormalNumInput.value = RsNormal;
+	GRangeInput.value = GNormalNumInput.value = GsNormal;
+	BRangeInput.value = BNormalNumInput.value = BsNormal;
+},
+syncColorCode = e=>{
+	if(e.target.checkValidity() === false) return undefined;
+	updateSrgbByCode();
+},
+updateCodeBySrgb = ()=>{
+	combinedHexCode = `${('0'+Math.round(Rs).toString(16)).slice(-2)}${('0'+Math.round(Gs).toString(16)).slice(-2)}${('0'+Math.round(Bs).toString(16)).slice(-2)}`;
+	colorPickInput.value = `#${combinedHexCode}`;
+	if(outputsLowerCase === false) {
+		if(prefixesColorCode === true) return colorCodeInput.value = `#${combinedHexCode.toUpperCase()}`;
+		return colorCodeInput.value = combinedHexCode.toUpperCase();
+	}
+	if(prefixesColorCode === true) return colorCodeInput.value = `#${combinedHexCode}`;
+	colorCodeInput.value = combinedHexCode;
+},
+updateCodeByNormalizedSrgb = ()=>{
+	combinedHexCode = `${('0'+Math.round(255*RsNormal).toString(16)).slice(-2)}${
+		('0'+Math.round(255*GsNormal).toString(16)).slice(-2)
+	}${('0'+Math.round(255*BsNormal).toString(16)).slice(-2)}`;
+	colorPickInput.value = `#${combinedHexCode}`;
+	if(outputsLowerCase === false) {
+		if(prefixesColorCode === true) return colorCodeInput.value = `#${combinedHexCode.toUpperCase()}`;
+		return colorCodeInput.value = combinedHexCode.toUpperCase();
+	}
+	if(prefixesColorCode === true) return colorCodeInput.value = `#${combinedHexCode}`;
+	colorCodeInput.value = combinedHexCode;
+},
+syncSrgb = e=>{
+	if(e.target.checkValidity() === false) return undefined;
+	updateCodeBySrgb();
+},
+syncNormalizedSrgb = e=>{
+	if(e.target.checkValidity() === false) return undefined;
+	updateCodeByNormalizedSrgb();
+},
+srgb24ToHue = (R, G, B)=>{
+	if(R === G && R === B) return {minorRadH :null, minorDegH: null, radH: null, degH: null};
+	const minorRadH = Math.atan2(Math.sqrt(3)*(G - B), 2*R - G - B),
+	minorDegH = Math.atan2(
+		Math.sqrt(3)*(G - B), 2*R - G - B
+	) *180/Math.PI;
+	return {
+		minorRadH,
+		minorDegH,
+		radH: (minorRadH >= 0)? minorRadH : minorRadH + 2*Math.PI,
+		degH: (minorDegH >= 0)? minorDegH : minorDegH + 360
+	};
+},
+gammaCompressLinearValueTo255x = v=>{
+	if(v <= 0.0031306684425006340) return v*16473/5;
+	return (v**(5/12)*10761 - 561)/40;
+},
+gammaCompressLinearValue = v=>{
+	if(v <= 0.0031306684425006340) return v*323/25;
+	return (v**(5/12)*211 - 11)/200;
+},
+gammaExpand255xSrgbValue = v=>{
+	if(v <= 10.314300250662588) return v*5/16473;
+	return ((v*40 + 561)/10761)**2.4;
+},
+gammaExpandNormalizedSrgbValue = v=>{
+	if(v <= 0.040448236277108191) return v/12.92;
+	return ((v + 0.055)/1.055)**2.4;
+},
+positiveNormalize = x=> (x > 0)? x : 0,
+minorRadHToPureSrgbY = [
+	()=> {
+		pureRsNormal = pureLinearR = 1;
+		pureGsNormal = positiveNormalize(3*minorRadH/Math.PI);
+		pureBsNormal = pureLinearB = 0;
+		pureLinearG = gammaExpandNormalizedSrgbValue(pureGsNormal);
+		pureY = 0.2126 + 0.7152*pureLinearG;
+	},
+	()=> {
+		pureRsNormal = positiveNormalize(2 - 3*minorRadH/Math.PI);
+		pureGsNormal = pureLinearG = 1;
+		pureBsNormal = pureLinearB = 0;
+		pureLinearR = gammaExpandNormalizedSrgbValue(pureRsNormal);
+		pureY = 0.7152 + 0.2126*pureLinearR;
+	},
+	()=> {
+		pureRsNormal = pureLinearR = 0;
+		pureGsNormal = pureLinearG = 1;
+		pureBsNormal = positiveNormalize(3*minorRadH/Math.PI - 2);
+		pureLinearB = gammaExpandNormalizedSrgbValue(pureBsNormal);
+		pureY = 0.7152 + 0.0722*pureLinearB;
+	},
+	()=> {
+		pureRsNormal = pureLinearR = 0;
+		pureGsNormal = positiveNormalize(3*Math.abs(minorRadH)/Math.PI - 2);
+		pureBsNormal = pureLinearB = 1;
+		pureLinearG = gammaExpandNormalizedSrgbValue(pureGsNormal);
+		pureY = 0.0722 + 0.7152*pureLinearG;
+	},
+	()=> {
+		pureRsNormal = positiveNormalize(3*minorRadH/Math.PI + 2);
+		pureGsNormal = pureLinearG = 0;
+		pureBsNormal = pureLinearB = 1;
+		pureLinearR = gammaExpandNormalizedSrgbValue(pureRsNormal);
+		pureY = 0.0722 + 0.2126*pureLinearR;
+	},
+	()=> {
+		pureY = 0.2126 - gammaExpandNormalizedSrgbValue(0.2166*minorRadH/Math.PI);
+		pureRsNormal = pureLinearR = 1;
+		pureGsNormal = pureLinearG = 0;
+		pureBsNormal = positiveNormalize(-3*minorRadH/Math.PI);
+		pureLinearB = gammaExpandNormalizedSrgbValue(pureBsNormal);
+	}
+],
+radHToPureSrgbY = [
+	()=> {
+		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(2.1456*radH/Math.PI);
+		pureRsNormal = pureLinearR = 1;
+		pureGsNormal = positiveNormalize(3*radH/Math.PI);
+		pureBsNormal = pureLinearB = 0;
+		pureLinearG = gammaExpandNormalizedSrgbValue(pureGsNormal);
+	},
+	()=> {
+		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.4252 - 0.6378*radH/Math.PI);
+		pureRsNormal = positiveNormalize(2 - 3*radH/Math.PI);
+		pureGsNormal = pureLinearG = 1;
+		pureBsNormal = pureLinearB = 0;
+		pureLinearR = gammaExpandNormalizedSrgbValue(pureRsNormal);
+	},
+	()=> {
+		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.2166*radH/Math.PI - 0.1444);
+		pureRsNormal = pureLinearR = 0;
+		pureGsNormal = pureLinearG = 1;
+		pureBsNormal = positiveNormalize(3*radH/Math.PI - 2);
+		pureLinearB = gammaExpandNormalizedSrgbValue(pureBsNormal);
+	},
+	()=> {
+		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(2.8608 - 2.1456*radH/Math.PI);
+		pureRsNormal = pureLinearR = 0;
+		pureGsNormal = positiveNormalize(4 - 3*radH/Math.PI);
+		pureBsNormal = pureLinearB = 1;
+		pureLinearG = gammaExpandNormalizedSrgbValue(pureGsNormal);
+	},
+	()=> {
+		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(0.6378*radH/Math.PI - 0.8504);
+		pureRsNormal = positiveNormalize(3*radH/Math.PI - 4);
+		pureGsNormal = pureLinearG = 0;
+		pureBsNormal = pureLinearB = 1;
+		pureLinearR = gammaExpandNormalizedSrgbValue(pureRsNormal);
+	},
+	()=> {
+		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(0.2166*radH/Math.PI - 0.4332);
+		pureRsNormal = pureLinearR = 1;
+		pureGsNormal = pureLinearG = 0;
+		pureBsNormal = positiveNormalize(3*radH/Math.PI - 6);
+		pureLinearB = gammaExpandNormalizedSrgbValue(pureBsNormal);
+	}
+],
+minorDegHToPureSrgbY = [
+	()=> {
+		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(0.01192*minorDegH);
+		pureRsNormal = pureLinearR = 1;
+		pureGsNormal = positiveNormalize(minorDegH/60);
+		pureBsNormal = pureLinearB = 0;
+		pureLinearG = gammaExpandNormalizedSrgbValue(pureGsNormal);
+	},
+	()=> {
+		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.4252 - 0.2126*minorDegH/60);
+		pureRsNormal = positiveNormalize(2 - minorDegH/60);
+		pureGsNormal = pureLinearG = 1;
+		pureBsNormal = pureLinearB = 0;
+		pureLinearR = gammaExpandNormalizedSrgbValue(pureRsNormal);
+	},
+	()=> {
+		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.0722*minorDegH/60 - 0.1444);
+		pureRsNormal = pureLinearR = 0;
+		pureGsNormal = pureLinearG = 1;
+		pureBsNormal = positiveNormalize(minorDegH/60 - 2);
+		pureLinearB = gammaExpandNormalizedSrgbValue(pureBsNormal);
+	},
+	()=> {
+		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(0.01192*Math.abs(minorDegH) - 1.4304);
+		pureRsNormal = pureLinearR = 0;
+		pureGsNormal = positiveNormalize(Math.abs(minorDegH)/60 - 2);
+		pureBsNormal = pureLinearB = 1;
+		pureLinearG = gammaExpandNormalizedSrgbValue(pureGsNormal);
+	},
+	()=> {
+		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(0.2126*minorDegH/60 + 0.4252);
+		pureRsNormal = positiveNormalize(minorDegH/60 + 2);
+		pureGsNormal = pureLinearG = 0;
+		pureBsNormal = pureLinearB = 1;
+		pureLinearR = gammaExpandNormalizedSrgbValue(pureRsNormal);
+	},
+	()=> {
+		pureY = 0.2126 - gammaExpandNormalizedSrgbValue(0.0722*minorDegH/60);
+		pureRsNormal = pureLinearR = 1;
+		pureGsNormal = pureLinearG = 0;
+		pureBsNormal = positiveNormalize(-minorDegH/60);
+		pureLinearB = gammaExpandNormalizedSrgbValue(pureBsNormal);
+	}
+],
+degHToPureSrgbY = [
+	()=> {
+		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(0.01192*degH);
+		pureRsNormal = pureLinearR = 1;
+		pureGsNormal = positiveNormalize(degH/60);
+		pureBsNormal = pureLinearB = 0;
+		pureLinearG = gammaExpandNormalizedSrgbValue(pureGsNormal);
+	},
+	()=> {
+		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.4252 - 0.2126*degH/60);
+		pureRsNormal = positiveNormalize(2 - degH/60);
+		pureGsNormal = pureLinearG = 1;
+		pureBsNormal = pureLinearB = 0;
+		pureLinearR = gammaExpandNormalizedSrgbValue(pureRsNormal);
+	},
+	()=> {
+		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.0722*degH/60 - 0.1444);
+		pureRsNormal = pureLinearR = 0;
+		pureGsNormal = pureLinearG = 1;
+		pureBsNormal = positiveNormalize(degH/60 - 2);
+		pureLinearB = gammaExpandNormalizedSrgbValue(pureBsNormal);
+	},
+	()=> {
+		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(2.8608 - 0.01192*degH);
+		pureRsNormal = pureLinearR = 0;
+		pureGsNormal = positiveNormalize(4 - degH/60);
+		pureBsNormal = pureLinearB = 1;
+		pureLinearG = gammaExpandNormalizedSrgbValue(pureGsNormal);
+	},
+	()=> {
+		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(0.2126*degH/60 - 0.8504);
+		pureRsNormal = positiveNormalize(degH/60 - 4);
+		pureGsNormal = pureLinearG = 0;
+		pureBsNormal = pureLinearB = 1;
+		pureLinearR = gammaExpandNormalizedSrgbValue(pureRsNormal);
+	},
+	()=> {
+		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(0.4332 - 0.0722*degH/60);
+		pureRsNormal = pureLinearR = 1;
+		pureGsNormal = pureLinearG = 0;
+		pureBsNormal = positiveNormalize(6 - degH/60);
+		pureLinearB = gammaExpandNormalizedSrgbValue(pureBsNormal);
+	}
+],
+HToPureSrgbY = [
+	()=> {
+		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(4.2912*H);
+		pureRsNormal = pureLinearR = 1;
+		pureGsNormal = positiveNormalize(6*H);
+		pureBsNormal = pureLinearB = 0;
+		pureLinearG = gammaExpandNormalizedSrgbValue(pureGsNormal);
+	},
+	()=> {
+		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.4252 - 1.2756*H);
+		pureRsNormal = positiveNormalize(2 - 6*H);
+		pureGsNormal = pureLinearG = 1;
+		pureBsNormal = pureLinearB = 0;
+		pureLinearR = gammaExpandNormalizedSrgbValue(pureRsNormal);
+	},
+	()=> {
+		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.4332*H - 0.1444);
+		pureRsNormal = pureLinearR = 0;
+		pureGsNormal = pureLinearG = 1;
+		pureBsNormal = positiveNormalize(6*H - 2);
+		pureLinearB = gammaExpandNormalizedSrgbValue(pureBsNormal);
+	},
+	()=> {
+		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(2.8608 - 4.2912*H);
+		pureRsNormal = pureLinearR = 0;
+		pureGsNormal = positiveNormalize(4 - 6*H);
+		pureBsNormal = pureLinearB = 1;
+		pureLinearG = gammaExpandNormalizedSrgbValue(pureGsNormal);
+	},
+	()=> {
+		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(1.2756*H - 0.8504);
+		pureRsNormal = positiveNormalize(6*H - 4);
+		pureGsNormal = pureLinearG = 0;
+		pureBsNormal = pureLinearB = 1;
+		pureLinearR = gammaExpandNormalizedSrgbValue(pureRsNormal);
+	},
+	()=> {
+		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(0.4332*(1 - H));
+		pureRsNormal = pureLinearR = 1;
+		pureGsNormal = pureLinearG = 0;
+		pureBsNormal = positiveNormalize(6*(1 - H));
+		pureLinearB = gammaExpandNormalizedSrgbValue(pureBsNormal);
+	}
+],
+calculatePureYSrgbByNormalizedH = ()=>{
+	hInterval = (6*H | 0);
+	HToPureSrgbY[hInterval]();
+},
+calculatePureYSrgbByRadH = ()=>{
+	hInterval = (3*radH/Math.PI | 0);
+	radHToPureSrgbY[hInterval]();
+},
+calculatePureYSrgbByDegH = ()=>{
+	hInterval = (degH/60 | 0);
+	degHToPureSrgbY[hInterval]();
+}/*
+updateSrgbByRadHY = ()=>{
+	if(radH === null) {
+		Rs = Gs = Bs = RNumInput.value = GNumInput.value = BNumInput.value = gammaCompressLinearValueTo255x(Y);
+		RsNormal = GsNormal = BsNormal = RRangeInput.value = GRangeInput.value = BRangeInput.value = (
+			RNormalNumInput.value = GNormalNumInput.value = BNormalNumInput.value = gammaCompressLinearValue(Y)
+		);
+		return undefined;
+	}
+	calculatePureYSrgbByRadH();
+	if(pureY >= Y) {
+		pureProportion = Y/pureY;
+		linearR = pureLinearR*Y/pureY;
+		linearG = pureLinearG*Y/pureY;
+		linearB = pureLinearB*Y/pureY;
+	} else{
+		pureProportion = (Y - pureY)/(1 - pureY);
+		linearR = pureLinearR + (1 - pureLinearR)*(Y - pureY)/(1 - pureY);
+		linearG = pureLinearG + (1 - pureLinearG)*(Y - pureY)/(1 - pureY);
+		linearB = pureLinearB + (1 - pureLinearB)*(Y - pureY)/(1 - pureY);
+	}
+	Rs = RNumInput.value = gammaCompressLinearValueTo255x(linearR);
+	Gs = GNumInput.value = gammaCompressLinearValueTo255x(linearG);
+	Bs = BNumInput.value = gammaCompressLinearValueTo255x(linearB);
+	RsNormal = RRangeInput.value = RNormalNumInput.value = gammaCompressLinearValue(linearR);
+	GsNormal = GRangeInput.value = GNormalNumInput.value = gammaCompressLinearValue(linearG);
+	BsNormal = BRangeInput.value = BNormalNumInput.value = gammaCompressLinearValue(linearB);
+}*/,
+updateSrgbByHY = ()=>{
+	if(H === null) {
+		Rs = Gs = Bs = RNumInput.value = GNumInput.value = BNumInput.value = gammaCompressLinearValueTo255x(Y);
+		RsNormal = GsNormal = BsNormal = RRangeInput.value = GRangeInput.value = BRangeInput.value = (
+			RNormalNumInput.value = GNormalNumInput.value = BNormalNumInput.value = gammaCompressLinearValue(Y)
+		);
+		return undefined;
+	}
+	calculatePureYSrgbByNormalizedH();
+	if(pureY >= Y) {
+		pureProportion = Y/pureY;
+		linearR = pureLinearR*Y/pureY;
+		linearG = pureLinearG*Y/pureY;
+		linearB = pureLinearB*Y/pureY;
+	} else{
+		pureProportion = (Y - pureY)/(1 - pureY);
+		linearR = pureLinearR + (1 - pureLinearR)*(Y - pureY)/(1 - pureY);
+		linearG = pureLinearG + (1 - pureLinearG)*(Y - pureY)/(1 - pureY);
+		linearB = pureLinearB + (1 - pureLinearB)*(Y - pureY)/(1 - pureY);
+	}
+	Rs = RNumInput.value = gammaCompressLinearValueTo255x(linearR);
+	Gs = GNumInput.value = gammaCompressLinearValueTo255x(linearG);
+	Bs = BNumInput.value = gammaCompressLinearValueTo255x(linearB);
+	RsNormal = RRangeInput.value = RNormalNumInput.value = gammaCompressLinearValue(linearR);
+	GsNormal = GRangeInput.value = GNormalNumInput.value = gammaCompressLinearValue(linearG);
+	BsNormal = BRangeInput.value = BNormalNumInput.value = gammaCompressLinearValue(linearB);
+},
+updateSrgbByDegHY = ()=>{
+	if(degH === null) {
+		Rs = Gs = Bs = RNumInput.value = GNumInput.value = BNumInput.value = gammaCompressLinearValueTo255x(Y);
+		RsNormal = GsNormal = BsNormal = RRangeInput.value = GRangeInput.value = BRangeInput.value = (
+			RNormalNumInput.value = GNormalNumInput.value = BNormalNumInput.value = gammaCompressLinearValue(Y)
+		);
+		return undefined;
+	}
+	calculatePureYSrgbByDegH();
+	if(pureY >= Y) {
+		pureProportion = Y/pureY;
+		linearR = pureLinearR*Y/pureY;
+		linearG = pureLinearG*Y/pureY;
+		linearB = pureLinearB*Y/pureY;
+	} else{
+		pureProportion = (Y - pureY)/(1 - pureY);
+		linearR = pureLinearR + (1 - pureLinearR)*(Y - pureY)/(1 - pureY);
+		linearG = pureLinearG + (1 - pureLinearG)*(Y - pureY)/(1 - pureY);
+		linearB = pureLinearB + (1 - pureLinearB)*(Y - pureY)/(1 - pureY);
+	}
+	Rs = RNumInput.value = gammaCompressLinearValueTo255x(linearR);
+	Gs = GNumInput.value = gammaCompressLinearValueTo255x(linearG);
+	Bs = BNumInput.value = gammaCompressLinearValueTo255x(linearB);
+	RsNormal = RRangeInput.value = RNormalNumInput.value = gammaCompressLinearValue(linearR);
+	GsNormal = GRangeInput.value = GNormalNumInput.value = gammaCompressLinearValue(linearG);
+	BsNormal = BRangeInput.value = BNormalNumInput.value = gammaCompressLinearValue(linearB);
+},
+syncNormalizedH = e=>{
+	if(degHNumInput.checkValidity() === false) return undefined;
+	updateSrgbByHY();
+	updateCodeByNormalizedSrgb();
+},
+syncDegH = e=>{
+	if(degHNumInput.checkValidity() === false) return undefined;
+	updateSrgbByDegHY();
+	updateCodeByNormalizedSrgb();
+};
+
+let shouldSync = true, outputsLowerCase = false, prefixesColorCode = false,
+colorCodeHexValue = 0xbcbcbc,
+combinedHexCode = 'BCBCBC',
+separatedHexCode = [0xbc, 0xbc, 0xbc],
+Rs = 188, Gs = 188, Bs = 188,
+RsNormal = 0.7372549019607844, GsNormal = 0.7372549019607844, BsNormal = 0.7372549019607844,
+H = null, degH = null, radH = null, minorDegH = null, minorRadH = null,
+hInterval, pureY,
+pureRsNormal, pureGsNormal, pureBsNormal, pureLinearR, pureLinearG, pureLinearB,
+pureProportion, linearR, linearG, linearB,
+Y = 0.5028864580325684;
+
+form.addEventListener('submit', e=>{
+	e.preventDefault();
+}, {passive: false});
+
+addAsyncListener(syncGovernorBox, toggleSyncMode, 'change');
+addAsyncListener(colorPickInput, colorPickInterfaces);
+addAsyncListener(colorCodeInput, colorCodeInterfaces);
+addAsyncListener(caseGovernorBox, toggleCaseMode, 'change');
+addAsyncListener(prefixGovernorBox, togglePrefixMode, 'change');
+addAsyncListener(RNumInput, RNumInterfaces);
+addAsyncListener(RRangeInput, RRangeInterfaces);
+addAsyncListener(RNormalNumInput, RNormalInterfaces);
+addAsyncListener(GNumInput, GNumInterfaces);
+addAsyncListener(GRangeInput, GRangeInterfaces);
+addAsyncListener(GNormalNumInput, GNormalInterfaces);
+addAsyncListener(BNumInput, BNumInterfaces);
+addAsyncListener(BRangeInput, BRangeInterfaces);
+addAsyncListener(BNormalNumInput, BNormalInterfaces);
+addAsyncListener(degHNumInput, degHInterfaces);
+addAsyncListener(HRangeInput, HRangeInterfaces);
+addAsyncListener(HNormalNumInput, HNormalInterfaces);
+addAsyncListener(YRangeInput, YRangeInterfaces);
+addAsyncListener(YNumInput, YNormalInterfaces);
+addSyncCouldListener(colorPickInput, syncColorCode);
+addSyncCouldListener(colorCodeInput, syncColorCode);
+colorPickInput.addEventListener('change', syncColorCode, eventOptions);
+colorCodeInput.addEventListener('change', syncColorCode, eventOptions);
+addSyncCouldListener(RNumInput, syncSrgb);
+addSyncCouldListener(GNumInput, syncSrgb);
+addSyncCouldListener(BNumInput, syncSrgb);
+RNumInput.addEventListener('change', syncSrgb, eventOptions);
+GNumInput.addEventListener('change', syncSrgb, eventOptions);
+BNumInput.addEventListener('change', syncSrgb, eventOptions);
+addSyncCouldListener(RRangeInput, syncNormalizedSrgb);
+addSyncCouldListener(GRangeInput, syncNormalizedSrgb);
+addSyncCouldListener(BRangeInput, syncNormalizedSrgb);
+RRangeInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
+GRangeInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
+BRangeInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
+addSyncCouldListener(RNormalNumInput, syncNormalizedSrgb);
+addSyncCouldListener(GNormalNumInput, syncNormalizedSrgb);
+addSyncCouldListener(BNormalNumInput, syncNormalizedSrgb);
+RNormalNumInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
+GNormalNumInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
+BNormalNumInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
+addSyncCouldListener(degHNumInput, syncDegH);
+addSyncCouldListener(HRangeInput, syncDegH);
+addSyncCouldListener(HNormalNumInput, syncNormalizedH);
+degHNumInput.addEventListener('change', syncDegH, eventOptions);
+HRangeInput.addEventListener('change', syncDegH, eventOptions);
+HNormalNumInput.addEventListener('change', syncNormalizedH, eventOptions);
+
+}catch(e){window.alert(e);}
+})();
+
+/*]]>*/
+	</script>
+	
+</body>
+</html>
