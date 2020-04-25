@@ -97,7 +97,7 @@ body {
 
 <body>
 	<header id="header" class="Header">
-		<p class="Header_text">0.1.1版、最終更新：2020/04/25</p>
+		<p class="Header_text">0.1.2 版、最終更新：2020/04/25</p>
 	</header>
 		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値・配色属性 HSYの相互変換.xhtml</h1>
 		<p class="Main_beginning">各値を直接またはスライダーでその割合を入力して、<!--
@@ -343,63 +343,63 @@ BNormalInterfaces = e=>{
 },
 linearRNumInterfaces = e=>{
 	if(linearRNumInput.value === '' || linearRNumInput.checkValidity() === false) return undefined;
-	linearRs = linearRNumInput.valueAsNumber;
-	linearRsNormal = linearRs/255;
-	linearRRangeInput.value = linearRNormalNumInput.value = linearRsNormal;
+	linearR = linearRNumInput.valueAsNumber;
+	linearRNormal = linearR/255;
+	linearRRangeInput.value = linearRNormalNumInput.value = linearRNormal;
 },
 linearRRangeInterfaces = e=>{
 	if(linearRRangeInput.checkValidity() === false) return undefined;
-	linearRsNormal = linearRRangeInput.valueAsNumber;
-	linearRs = 255*linearRsNormal;
-	linearRNumInput.value = linearRs;
-	linearRNormalNumInput.value = linearRsNormal;
+	linearRNormal = linearRRangeInput.valueAsNumber;
+	linearR = 255*linearRNormal;
+	linearRNumInput.value = linearR;
+	linearRNormalNumInput.value = linearRNormal;
 },
 linearRNormalInterfaces = e=>{
 	if(linearRNormalNumInput.value === '' || linearRNormalNumInput.checkValidity() === false) return undefined;
-	linearRsNormal = linearRNormalNumInput.valueAsNumber;
-	linearRs = 255*linearRsNormal;
-	linearRNumInput.value = linearRs;
-	linearRRangeInput.value = linearRsNormal;
+	linearRNormal = linearRNormalNumInput.valueAsNumber;
+	linearR = 255*linearRNormal;
+	linearRNumInput.value = linearR;
+	linearRRangeInput.value = linearRNormal;
 },
 linearGNumInterfaces = e=>{
 	if(linearGNumInput.value === '' || linearGNumInput.checkValidity() === false) return undefined;
-	linearGs = linearGNumInput.valueAsNumber;
-	linearGsNormal = linearGs/255;
-	linearGRangeInput.value = linearGNormalNumInput.value = linearGsNormal;
+	linearG = linearGNumInput.valueAsNumber;
+	linearGNormal = linearG/255;
+	linearGRangeInput.value = linearGNormalNumInput.value = linearGNormal;
 },
 linearGRangeInterfaces = e=>{
 	if(linearGRangeInput.checkValidity() === false) return undefined;
-	linearGsNormal = linearGRangeInput.valueAsNumber;
-	linearGs = 255*linearGsNormal;
-	linearGNumInput.value = linearGs;
-	linearGNormalNumInput.value = linearGsNormal;
+	linearGNormal = linearGRangeInput.valueAsNumber;
+	linearG = 255*linearGNormal;
+	linearGNumInput.value = linearG;
+	linearGNormalNumInput.value = linearGNormal;
 },
 linearGNormalInterfaces = e=>{
 	if(linearGNormalNumInput.value === '' || linearGNormalNumInput.checkValidity() === false) return undefined;
-	linearGsNormal = linearGNormalNumInput.valueAsNumber;
-	linearGs = 255*linearGsNormal;
-	linearGNumInput.value = linearGs;
-	linearGRangeInput.value = linearGsNormal;
+	linearGNormal = linearGNormalNumInput.valueAsNumber;
+	linearG = 255*linearGNormal;
+	linearGNumInput.value = linearG;
+	linearGRangeInput.value = linearGNormal;
 },
 linearBNumInterfaces = e=>{
 	if(linearBNumInput.value === '' || linearBNumInput.checkValidity() === false) return undefined;
-	linearBs = linearBNumInput.valueAsNumber;
-	linearBsNormal = linearBs/255;
-	linearBRangeInput.value = linearBNormalNumInput.value = linearBsNormal;
+	linearB = linearBNumInput.valueAsNumber;
+	linearBNormal = linearB/255;
+	linearBRangeInput.value = linearBNormalNumInput.value = linearBNormal;
 },
 linearBRangeInterfaces = e=>{
 	if(linearBRangeInput.checkValidity() === false) return undefined;
-	linearBsNormal = linearBRangeInput.valueAsNumber;
-	linearBs = 255*linearBsNormal;
-	linearBNumInput.value = linearBs;
-	linearBNormalNumInput.value = linearBsNormal;
+	linearBNormal = linearBRangeInput.valueAsNumber;
+	linearB = 255*linearBNormal;
+	linearBNumInput.value = linearB;
+	linearBNormalNumInput.value = linearBNormal;
 },
 linearBNormalInterfaces = e=>{
 	if(linearBNormalNumInput.value === '' || linearBNormalNumInput.checkValidity() === false) return undefined;
-	linearBsNormal = linearBNormalNumInput.valueAsNumber;
-	linearBs = 255*linearBsNormal;
-	linearBNumInput.value = linearBs;
-	linearBRangeInput.value = linearBsNormal;
+	linearBNormal = linearBNormalNumInput.valueAsNumber;
+	linearB = 255*linearBNormal;
+	linearBNumInput.value = linearB;
+	linearBRangeInput.value = linearBNormal;
 },
 degHInterfaces = e=>{
 	if(degHNumInput.checkValidity() === false) return undefined;
