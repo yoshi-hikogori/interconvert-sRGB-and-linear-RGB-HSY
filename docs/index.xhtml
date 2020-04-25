@@ -341,6 +341,66 @@ BNormalInterfaces = e=>{
 	BNumInput.value = Bs;
 	BRangeInput.value = BsNormal;
 },
+linearRNumInterfaces = e=>{
+	if(linearRNumInput.value === '' || linearRNumInput.checkValidity() === false) return undefined;
+	linearRs = linearRNumInput.valueAsNumber;
+	linearRsNormal = linearRs/255;
+	linearRRangeInput.value = linearRNormalNumInput.value = linearRsNormal;
+},
+linearRRangeInterfaces = e=>{
+	if(linearRRangeInput.checkValidity() === false) return undefined;
+	linearRsNormal = linearRRangeInput.valueAsNumber;
+	linearRs = 255*linearRsNormal;
+	linearRNumInput.value = linearRs;
+	linearRNormalNumInput.value = linearRsNormal;
+},
+linearRNormalInterfaces = e=>{
+	if(linearRNormalNumInput.value === '' || linearRNormalNumInput.checkValidity() === false) return undefined;
+	linearRsNormal = linearRNormalNumInput.valueAsNumber;
+	linearRs = 255*linearRsNormal;
+	linearRNumInput.value = linearRs;
+	linearRRangeInput.value = linearRsNormal;
+},
+linearGNumInterfaces = e=>{
+	if(linearGNumInput.value === '' || linearGNumInput.checkValidity() === false) return undefined;
+	linearGs = linearGNumInput.valueAsNumber;
+	linearGsNormal = linearGs/255;
+	linearGRangeInput.value = linearGNormalNumInput.value = linearGsNormal;
+},
+linearGRangeInterfaces = e=>{
+	if(linearGRangeInput.checkValidity() === false) return undefined;
+	linearGsNormal = linearGRangeInput.valueAsNumber;
+	linearGs = 255*linearGsNormal;
+	linearGNumInput.value = linearGs;
+	linearGNormalNumInput.value = linearGsNormal;
+},
+linearGNormalInterfaces = e=>{
+	if(linearGNormalNumInput.value === '' || linearGNormalNumInput.checkValidity() === false) return undefined;
+	linearGsNormal = linearGNormalNumInput.valueAsNumber;
+	linearGs = 255*linearGsNormal;
+	linearGNumInput.value = linearGs;
+	linearGRangeInput.value = linearGsNormal;
+},
+linearBNumInterfaces = e=>{
+	if(linearBNumInput.value === '' || linearBNumInput.checkValidity() === false) return undefined;
+	linearBs = linearBNumInput.valueAsNumber;
+	linearBsNormal = linearBs/255;
+	linearBRangeInput.value = linearBNormalNumInput.value = linearBsNormal;
+},
+linearBRangeInterfaces = e=>{
+	if(linearBRangeInput.checkValidity() === false) return undefined;
+	linearBsNormal = linearBRangeInput.valueAsNumber;
+	linearBs = 255*linearBsNormal;
+	linearBNumInput.value = linearBs;
+	linearBNormalNumInput.value = linearBsNormal;
+},
+linearBNormalInterfaces = e=>{
+	if(linearBNormalNumInput.value === '' || linearBNormalNumInput.checkValidity() === false) return undefined;
+	linearBsNormal = linearBNormalNumInput.valueAsNumber;
+	linearBs = 255*linearBsNormal;
+	linearBNumInput.value = linearBs;
+	linearBRangeInput.value = linearBsNormal;
+},
 degHInterfaces = e=>{
 	if(degHNumInput.checkValidity() === false) return undefined;
 	degH = HRangeInput.value = degHNumInput.valueAsNumber;
@@ -816,6 +876,15 @@ addAsyncListener(GNormalNumInput, GNormalInterfaces);
 addAsyncListener(BNumInput, BNumInterfaces);
 addAsyncListener(BRangeInput, BRangeInterfaces);
 addAsyncListener(BNormalNumInput, BNormalInterfaces);
+addAsyncListener(linearRNumInput, linearRNumInterfaces);
+addAsyncListener(linearRRangeInput, linearRRangeInterfaces);
+addAsyncListener(linearRNormalNumInput, linearRNormalInterfaces);
+addAsyncListener(linearGNumInput, linearGNumInterfaces);
+addAsyncListener(linearGRangeInput, linearGRangeInterfaces);
+addAsyncListener(linearGNormalNumInput, linearGNormalInterfaces);
+addAsyncListener(linearBNumInput, linearBNumInterfaces);
+addAsyncListener(linearBRangeInput, linearBRangeInterfaces);
+addAsyncListener(linearBNormalNumInput, linearBNormalInterfaces);
 addAsyncListener(degHNumInput, degHInterfaces);
 addAsyncListener(HRangeInput, HRangeInterfaces);
 addAsyncListener(HNormalNumInput, HNormalInterfaces);
