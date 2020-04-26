@@ -97,7 +97,7 @@ body {
 
 <body>
 	<header id="header" class="Header">
-		<p class="Header_text">0.1.5 版、最終更新：2020/04/26</p>
+		<p class="Header_text">0.1.6 版、最終更新：2020/04/27</p>
 	</header>
 		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値・配色属性 HSYの相互変換.xhtml</h1>
 		<p class="Main_beginning">各値を直接またはスライダーでその割合を入力して、<!--
@@ -155,7 +155,7 @@ body {
 				<legend accesskey="M"><h3>色相 H、飽和度 S、相対輝度 Y（線形 RGB 色空間） (<kbd><kbd class="underline-text">M</kbd></kbd>)</h3></legend>
 				<p>
 					<label>H: <input id="degHNumInput" name="degHNumInput" type="number" value="" max="360" step="any" placeholder="未定義" /></label>
-					<input id="HRangeInput" name="HRangeInput" type="range" value="360" max="360" step="any" />
+					<input id="HRangeInput" name="HRangeInput" type="range" value="1" max="1" step="any" />
 					<input id="HNormalNumInput" name="HNormalNumInput" type="number" value="" max="1" step="any" placeholder="未定義" />
 				</p>
 				<p>
@@ -405,35 +405,33 @@ linearBNormalInterfaces = e=>{
 },
 degHInterfaces = e=>{
 	if(degHNumInput.checkValidity() === false) return undefined;
-	degH = HRangeInput.value = degHNumInput.valueAsNumber;
+	degH = degHNumInput.valueAsNumber;
 	if(degH === 360 || degHNumInput.value === '') {
 		H = degH = null;
+		HRangeInput.value = 1;
 		return degHNumInput.value = HNormalNumInput.value = '';
 	}
-	H = degH/360;
-	HNormalNumInput.value = H;
+	HRangeInput.value = HNormalNumInput.value = H = degH/360;
 },
 HRangeInterfaces = e=>{
 	if(HRangeInput.checkValidity() === false) return undefined;
-	degH = HRangeInput.valueAsNumber;
-	if(degH === 360) {
+	H = HRangeInput.valueAsNumber;
+	if(H === 1) {
 		H = degH = null;
 		return degHNumInput.value = HNormalNumInput.value = '';
 	}
-	H = degH/360;
+	degH = 360*H;
 	degHNumInput.value = degH;
 	HNormalNumInput.value = H;
 },
 HNormalInterfaces = e=>{
 	if(HNormalNumInput.checkValidity() === false) return undefined;
-	H = HNormalNumInput.valueAsNumber;
+	HRangeInput.value = H = HNormalNumInput.valueAsNumber;
 	if(H === 1 || HNormalNumInput.value === '') {
 		H = degH = null;
-		HRangeInput.value = 360;
 		return degHNumInput.value = HNormalNumInput.value = '';
 	}
-	degH = 360*H;
-	degHNumInput.value = HRangeInput.value = degH;
+	degHNumInput.value = degH = 360*H;
 },
 SRangeInterfaces = e=>{
 	if(SRangeInput.checkValidity() === false) return undefined;
@@ -507,6 +505,19 @@ gammaCompressLinearValue = v=>{
 	if(v <= 0.0031306684425006340) return v*323/25;
 	return (v**(5/12)*211 - 11)/200;
 },
+calculatedegHFunctionsForMin = {
+	B: ()=> 60 + 60*(linearGNormal - linearRNormal)/linearDiff,
+	R: ()=> 180 + 60*(linearBNormal - linearGNormal)/linearDiff,
+	G: ()=> 300 + 60*(linearRNormal - linearBNormal)/linearDiff
+},
+calculateHFunctionsForMin = {
+	B: ()=> (1 + (linearGNormal - linearRNormal)/linearDiff)/6,
+	R: ()=> (3 + (linearBNormal - linearGNormal)/linearDiff)/6,
+	G: ()=> (5 + (linearRNormal - linearBNormal)/linearDiff)/6
+},
+calculateHByLinearRgb = ()=>{
+	
+},
 updateLinearRgbBySrgb = ()=>{
 	linearRRangeInput.value = linearRNormalNumInput.value = linearRNormal = gammaExpand255xSrgbValue(Rs);
 	linearGRangeInput.value = linearGNormalNumInput.value = linearGNormal = gammaExpand255xSrgbValue(Gs);
@@ -523,29 +534,49 @@ updateLinearRgbByNormalizedSrgb = ()=>{
 	linearGNumInput.value = linearG = linearGNormal*255;
 	linearBNumInput.value = linearB = linearBNormal*255;
 },
+updateHsyByLinearSrgb = ()=>{
+	if(linearRNormal === linearGNormal && linearGNormal === linearBNormal) {
+		H = degH = null;
+		HRangeInput.value = 1;
+		degHNumInput.value = HNormalNumInput.value = '';
+		SNumInput.value = SRangeInput.value = S = 0;
+		return YNumInput.value = YRangeInput.value = Y = linearRNormal*3;
+	}
+	linearMax = Math.max(linearRNormal, linearGNormal, linearBNormal);
+	linearMin = Math.min(linearRNormal, linearGNormal, linearBNormal);
+	linearDiff = linearMax - linearMin;
+	if(linearMin === linearBNormal) {
+		HRangeInput.value = HNormalNumInput.value = H = calculateHFunctionsForMin.B();
+		degHNumInput.value = degH = calculatedegHFunctionsForMin.B();
+	} else if(linearMin === linearRNormal) {
+		HRangeInput.value = HNormalNumInput.value = H = calculateHFunctionsForMin.R();
+		degHNumInput.value = degH = calculatedegHFunctionsForMin.R();
+	} else{
+		HRangeInput.value = HNormalNumInput.value = H = calculateHFunctionsForMin.G();
+		degHNumInput.value = degH = calculatedegHFunctionsForMin.G();
+	}
+	SNumInput.value = SRangeInput.value = S = linearDiff/(1 - Math.abs(linearMax + linearMin - 1));
+	YNumInput.value = YRangeInput.value = Y = (
+		0.21263900587151*linearRNormal + 0.71516867876776*linearGNormal +
+	0.07219231536073*linearBNormal);
+},
 syncColorCode = e=>{
 	if(e.target.checkValidity() === false) return undefined;
 	updateSrgbByCode();
 	updateLinearRgbBySrgb();
-	/*
-	updateHsyBySrgb();
-	*/
+	updateHsyByLinearSrgb();
 },
 syncSrgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
 	updateCodeBySrgb();
 	updateLinearRgbBySrgb();
-	/*
-	updateHsyBySrgb();
-	*/
+	updateHsyByLinearSrgb();
 },
 syncNormalizedSrgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
 	updateCodeByNormalizedSrgb();
 	updateLinearRgbByNormalizedSrgb();
-	/*
 	updateHsyByNormalizedSrgb();
-	*/
 },
 srgb24ToHue = (R, G, B)=>{
 	if(R === G && R === B) return {minorRadH :null, minorDegH: null, radH: null, degH: null};
@@ -893,6 +924,8 @@ Rs = 188, Gs = 188, Bs = 188,
 RsNormal = 0.7372549019607844, GsNormal = 0.7372549019607844, BsNormal = 0.7372549019607844,
 linearR = 128.23604679830493, linearG = 128.23604679830493, linearB = 128.23604679830493,
 linearRNormal = 0.5028864580325684, linearGNormal = 0.5028864580325684, linearBNormal = 0.5028864580325684,
+minPrimary = null, linearMax = 0.5028864580325684, linearMin = 0.5028864580325684,
+linearDiff = 0, linearMaxPlusMin = 1.0057729160651368,
 H = null, degH = null, radH = null, minorDegH = null, minorRadH = null, hInterval,
 S = 0, Y = 0.5028864580325684, pureY,
 pureRsNormal, pureGsNormal, pureBsNormal, pureLinearRNormal, pureLinearGNormal, pureLinearBNormal,
@@ -955,10 +988,10 @@ RNormalNumInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
 GNormalNumInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
 BNormalNumInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
 addSyncCouldListener(degHNumInput, syncDegH);
-addSyncCouldListener(HRangeInput, syncDegH);
+addSyncCouldListener(HRangeInput, syncNormalizedH);
 addSyncCouldListener(HNormalNumInput, syncNormalizedH);
 degHNumInput.addEventListener('change', syncDegH, eventOptions);
-HRangeInput.addEventListener('change', syncDegH, eventOptions);
+HRangeInput.addEventListener('change', syncNormalizedH, eventOptions);
 HNormalNumInput.addEventListener('change', syncNormalizedH, eventOptions);
 
 }catch(e){window.alert(e);}
