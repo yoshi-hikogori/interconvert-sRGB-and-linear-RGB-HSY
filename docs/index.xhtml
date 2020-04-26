@@ -1,3 +1,185 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja" dir="ltr">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値・配色属性 HSYの相互変換.xhtml</title>
+	<meta name="description" content="文書内容の説明" />
+	
+	<style>
+/*<![CDATA[*/
+/* ここから　リセット CSS */
+*, *::before, *::after {
+	box-sizing: border-box;
+}
+
+/* class属性を持つul、ol要素のデフォルトのpaddingを削除、リストスタイルを削除 */
+ul, ol {
+	padding: 0;
+	list-style: none;
+}
+ul:not([class]), ol:not([class]) {
+	display: block;
+	list-style: disc outside none;
+	padding: 0 0 0 40px;
+}
+ol:not([class]) {
+	list-style-type: decimal;
+}
+
+/* デフォルトのmarginを削除 */
+body, h1, h2, h3, h4, p, ul, ol,
+ li, figure, figcaption, blockquote, dl, dd, fieldset {
+	margin: 0;
+}
+ul:not([class]), ol:not([class]) {
+	margin: 1em 0;
+}
+
+:root {
+	scroll-behavior: smooth;
+}
+
+body {
+	text-rendering: optimizeSpeed;
+	line-height: 1.5;
+}
+
+/* class を持たないA要素はデフォルトのスタイルを取得 */
+a:not([class]) {
+	 text-decoration-skip-ink: auto;
+}
+
+img {
+  vertical-align: top;
+}
+
+input, button, textarea, select {
+  font-family: inherit;
+  font-size: inherit;
+  background-color: inherit;
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+/* リセット CSS　ここまで */
+
+body {
+	min-width: 100%;
+	overflow-wrap: break-word;
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+	font-family: "KokoroRegular", "NotoSerifCJKjpRegular", sans-serif, system-ui;
+	text-rendering: geometricPrecision;
+	color: #ffffff;
+	text-shadow: 0 0.25px 0 black, calc(17.5px / 99) calc(17.5px / 99) 0 black, 0.25px 0 0 black, calc(17.5px / 99) calc(-17.5px / 99) 0 black,
+	 0 -0.25px 0 black, calc(-17.5px / 99) calc(-17.5px / 99) 0 black, -0.25px 0 0 black, calc(-17.5px / 99) calc(17.5px / 99) 0 black;
+	background-color: #282828;
+}
+@supports not ((-webkit-text-size-adjust: 100%) or (text-size-adjust: 100%)) {
+	body {
+		-webkit-text-size-adjust: none;
+		text-size-adjust: none;
+	}
+}
+
+/*]]>*/
+	</style>
+</head>
+
+<body>
+	<header id="header" class="Header">
+		<p class="Header_text">0.1.5 版、最終更新：2020/04/26</p>
+	</header>
+		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値・配色属性 HSYの相互変換.xhtml</h1>
+		<p class="Main_beginning">各値を直接またはスライダーでその割合を入力して、<!--
+		-->入力された値を満たす他の値を返します</p>
+		<section id="section01" class="MainSection"><h2 class="MainSection_h2">文書内容1</h2>
+			<p id="p1" class="MainSection_par">ここに説明が入る</p>
+		</section>
+	</main>
+	<form id="form" name="form">
+		<fieldset><legend accesskey="F"><h2>入力欄 (<kbd><kbd class="underline-text">F</kbd></kbd>)</h2></legend>
+			<fieldset><legend accesskey="S"><h3>入力の反映形態 (<kbd><kbd class="underline-text">S</kbd></kbd>)</h3></legend>
+				<p><label><input id="syncGovernorBox" name="syncGovernorBox" type="checkbox" checked="checked" />反映契機設定 - 入力値の反映を入力欄の変更中に同期するか(チェックを外していると入力完了時に一括で反映)</label></p>
+			</fieldset>
+			<fieldset><legend accesskey="C"><h3>カラーコード（sRGB 色空間） (<kbd><kbd class="underline-text">C</kbd></kbd>)</h3></legend>
+				<p><input id="colorPickInput" name="colorPickInput" type="color" value="#bcbcbc" /></p>
+				<p><label><input id="colorCodeInput" name="colorCodeInput" type="text" value="BCBCBC" pattern="[\s\S]*[#＃]*[0-9a-fA-F０-９ａ-ｆＡ-Ｆ]{3,6}[\s\S]*" />(入力範囲： 000000–FFFFFF または 000–FFF の16進数、先頭の#の有無は自動で補完します)</label></p>
+				<p><label><input id="caseGovernorBox" name="caseGovernorBox" type="checkbox" />letter case設定 - カラーコードを大文字・小文字のいずれかに統一（チェックで小文字）</label></p>
+				<p><label><input id="prefixGovernorBox" name="prefixGovernorBox" type="checkbox" />接頭辞設定 - 出力するカラーコードに接頭辞｢#｣を付けるか（チェックで付ける）</label></p>
+			</fieldset>
+			<fieldset><legend accesskey="S"><h3>RGB 各チャンネルの明度 (sRGB 色空間、入力範囲： 0–255 の数値) (<kbd><kbd class="underline-text">S</kbd></kbd>)</h3></legend>
+				<p>
+					<label>R: <input id="RNumInput" name='RNumInput' type="number" value="188" max="255" step="any" /></label>
+					<input id="RRangeInput" name="RRangeInput" type="range" value="0.7372549019607844" max="1" step="any" />
+					<input id="RNormalNumInput" name="RNormalNumInput" type="number" value="0.7372549019607844" max="1" step="any" />
+				</p>
+				<p>
+					<label>G: <input id="GNumInput" name="GNumInput" type="number" value="188" max="255" step="any" /></label>
+					<input id="GRangeInput" name="GRangeInput" type="range" value="0.7372549019607844" max="1" step="any" />
+					<input id="GNormalNumInput" name="GNormalNumInput" type="number" value="0.7372549019607844" max="1" step="any" />
+				</p>
+				<p>
+					<label>B: <input id="BNumInput" name="BNumInput" type="number" value="188" max="255" step="any" /></label>
+					<input id="BRangeInput" name="BRangeInput" type="range" value="0.7372549019607844" max="1" step="any" />
+					<input id="BNormalNumInput" name="BNormalNumInput" type="number" value="0.7372549019607844" max="1" step="any" />
+				</p>
+			</fieldset>
+			<fieldset><legend accesskey="L"><h3>線形 RGB 各チャンネルの明度 (線形 RGB 色空間、入力範囲： 0–255 の数値) (<kbd><kbd class="underline-text">L</kbd></kbd>)</h3></legend>
+				<p>
+					<label>R: <input id="linearRNumInput" name='linearRNumInput' type="number" value="128.23604679830493" max="255" step="any" /></label>
+					<input id="linearRRangeInput" name="linearRRangeInput" type="range" value="0.5028864580325684" max="1" step="any" />
+					<input id="linearRNormalNumInput" name="linearRNormalNumInput" type="number" value="0.50288645803256844" max="1" step="any" />
+				</p>
+				<p>
+					<label>G: <input id="linearGNumInput" name="linearGNumInput" type="number" value="128.23604679830493" max="255" step="any" /></label>
+					<input id="linearGRangeInput" name="linearGRangeInput" type="range" value="0.5028864580325684" max="1" step="any" />
+					<input id="linearGNormalNumInput" name="linearGNormalNumInput" type="number" value="0.5028864580325684" max="1" step="any" />
+				</p>
+				<p>
+					<label>B: <input id="linearBNumInput" name="linearBNumInput" type="number" value="128.23604679830493" max="255" step="any" /></label>
+					<input id="linearBRangeInput" name="linearBRangeInput" type="range" value="0.5028864580325684" max="1" step="any" />
+					<input id="linearBNormalNumInput" name="linearBNormalNumInput" type="number" value="0.5028864580325684" max="1" step="any" />
+				</p>
+			</fieldset>
+			<fieldset>
+				<legend accesskey="M"><h3>色相 H、飽和度 S、相対輝度 Y（線形 RGB 色空間） (<kbd><kbd class="underline-text">M</kbd></kbd>)</h3></legend>
+				<p>
+					<label>H: <input id="degHNumInput" name="degHNumInput" type="number" value="" max="360" step="any" placeholder="未定義" /></label>
+					<input id="HRangeInput" name="HRangeInput" type="range" value="360" max="360" step="any" />
+					<input id="HNormalNumInput" name="HNormalNumInput" type="number" value="" max="1" step="any" placeholder="未定義" />
+				</p>
+				<p>
+					S: <input id="SRangeInput" name="SRangeInput" type="range" value="0" max="1" step="any" />
+					<input id="SNumInput" name="SNumInput" type="number" value="0" max="1" step="any" />
+				</p>
+				<p>
+					Y: <input id="YRangeInput" name="YRangeInput" type="range" value="0.5028864580325684" max="1" step="any" />
+					<input id="YNumInput" name="YNumInput" type="number" value="0.5028864580325684" max="1" step="any" />
+				</p>
+			</fieldset>
+			<p><input type="submit" id="formSubmit" name="formSubmit" form="form" value="入力値を反映" /></p>
+		</fieldset>
+	</form>
+	<footer>
+		<p><small>&#169; 2020 Yoshi Hikogori</small></p>
+		<p><small><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a> に基づいて、この文書を用いる事を許します。<!--
+			-->この文書について、用いる事によるいかなる損ないや内容の確度に対して、係る権利者は責任を負いません。
+		</small></p>
+	</footer>
+	
+	<script>
+/*<![CDATA[*/
+
 (()=>{'use strict';try{
 
 const form = document.forms.form,
@@ -781,3 +963,9 @@ HNormalNumInput.addEventListener('change', syncNormalizedH, eventOptions);
 
 }catch(e){window.alert(e);}
 })();
+
+/*]]>*/
+	</script>
+	
+</body>
+</html>
