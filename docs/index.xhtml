@@ -573,7 +573,7 @@ syncNormalizedSrgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
 	updateCodeByNormalizedSrgb();
 	updateLinearRgbByNormalizedSrgb();
-	updateHsyBylinearRgb();
+	updateHsyByLinearRgb();
 },
 srgb24ToHue = (R, G, B)=>{
 	if(R === G && R === B) return {minorRadH :null, minorDegH: null, radH: null, degH: null};
