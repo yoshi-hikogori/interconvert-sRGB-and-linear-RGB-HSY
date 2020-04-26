@@ -97,7 +97,7 @@ body {
 
 <body>
 	<header id="header" class="Header">
-		<p class="Header_text">0.1.3 版、最終更新：2020/04/25</p>
+		<p class="Header_text">0.1.4 版、最終更新：2020/04/26</p>
 	</header>
 		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値・配色属性 HSYの相互変換.xhtml</h1>
 		<p class="Main_beginning">各値を直接またはスライダーでその割合を入力して、<!--
@@ -469,10 +469,6 @@ updateSrgbByCode = ()=>{
 	GRangeInput.value = GNormalNumInput.value = GsNormal;
 	BRangeInput.value = BNormalNumInput.value = BsNormal;
 },
-syncColorCode = e=>{
-	if(e.target.checkValidity() === false) return undefined;
-	updateSrgbByCode();
-},
 updateCodeBySrgb = ()=>{
 	combinedHexCode = `${('0'+Math.round(Rs).toString(16)).slice(-2)}${('0'+Math.round(Gs).toString(16)).slice(-2)}${('0'+Math.round(Bs).toString(16)).slice(-2)}`;
 	colorPickInput.value = `#${combinedHexCode}`;
@@ -495,13 +491,61 @@ updateCodeByNormalizedSrgb = ()=>{
 	if(prefixesColorCode === true) return colorCodeInput.value = `#${combinedHexCode}`;
 	colorCodeInput.value = combinedHexCode;
 },
+gammaExpand255xSrgbValue = v=>{
+	if(v <= 10.314300250662588) return v*5/16473;
+	return ((v*40 + 561)/10761)**2.4;
+},
+gammaExpandNormalizedSrgbValue = v=>{
+	if(v <= 0.040448236277108191) return v/12.92;
+	return ((v + 0.055)/1.055)**2.4;
+},
+gammaCompressLinearValueTo255x = v=>{
+	if(v <= 0.0031306684425006340) return v*16473/5;
+	return (v**(5/12)*10761 - 561)/40;
+},
+gammaCompressLinearValue = v=>{
+	if(v <= 0.0031306684425006340) return v*323/25;
+	return (v**(5/12)*211 - 11)/200;
+},
+updateLinearRgbBySrgb = ()=>{
+	linearRRangeInput.value = linearRNormalNumInput.value = linearRNormal = gammaExpand255xSrgbValue(Rs);
+	linearGRangeInput.value = linearGNormalNumInput.value = linearGNormal = gammaExpand255xSrgbValue(Gs);
+	linearBRangeInput.value = linearBNormalNumInput.value = linearBNormal = gammaExpand255xSrgbValue(Bs);
+	linearRNumInput.value = linearR = linearRNormal*255;
+	linearGNumInput.value = linearG = linearGNormal*255;
+	linearBNumInput.value = linearB = linearBNormal*255;
+},
+updateLinearRgbByNormalizedSrgb = ()=>{
+	linearRRangeInput.value = linearRNormalNumInput.value = linearRNormal = gammaExpandNormalizedSrgbValue(RNormal);
+	linearGRangeInput.value = linearGNormalNumInput.value = linearGNormal = gammaExpandNormalizedSrgbValue(GNormal);
+	linearBRangeInput.value = linearBNormalNumInput.value = linearBNormal = gammaExpandNormalizedSrgbValue(BNormal);
+	linearRNumInput.value = linearR = linearRNormal*255;
+	linearGNumInput.value = linearG = linearGNormal*255;
+	linearBNumInput.value = linearB = linearBNormal*255;
+},
+syncColorCode = e=>{
+	if(e.target.checkValidity() === false) return undefined;
+	updateSrgbByCode();
+	updateLinearRgbBySrgb();
+	/*
+	updateHsyBySrgb();
+	*/
+},
 syncSrgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
 	updateCodeBySrgb();
+	updateLinearRgbBySrgb();
+	/*
+	updateHsyBySrgb();
+	*/
 },
 syncNormalizedSrgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
 	updateCodeByNormalizedSrgb();
+	updateLinearRgbByNormalizedSrgb();
+	/*
+	updateHsyByNormalizedSrgb();
+	*/
 },
 srgb24ToHue = (R, G, B)=>{
 	if(R === G && R === B) return {minorRadH :null, minorDegH: null, radH: null, degH: null};
@@ -515,22 +559,6 @@ srgb24ToHue = (R, G, B)=>{
 		radH: (minorRadH >= 0)? minorRadH : minorRadH + 2*Math.PI,
 		degH: (minorDegH >= 0)? minorDegH : minorDegH + 360
 	};
-},
-gammaCompressLinearValueTo255x = v=>{
-	if(v <= 0.0031306684425006340) return v*16473/5;
-	return (v**(5/12)*10761 - 561)/40;
-},
-gammaCompressLinearValue = v=>{
-	if(v <= 0.0031306684425006340) return v*323/25;
-	return (v**(5/12)*211 - 11)/200;
-},
-gammaExpand255xSrgbValue = v=>{
-	if(v <= 10.314300250662588) return v*5/16473;
-	return ((v*40 + 561)/10761)**2.4;
-},
-gammaExpandNormalizedSrgbValue = v=>{
-	if(v <= 0.040448236277108191) return v/12.92;
-	return ((v + 0.055)/1.055)**2.4;
 },
 positiveNormalize = x=> (x > 0)? x : 0,
 minorRadHToPureSrgbY = [
