@@ -515,9 +515,6 @@ calculateHFunctionsForMin = {
 	R: ()=> (3 + (linearBNormal - linearGNormal)/linearDiff)/6,
 	G: ()=> (5 + (linearRNormal - linearBNormal)/linearDiff)/6
 },
-calculateHByLinearRgb = ()=>{
-	
-},
 updateLinearRgbBySrgb = ()=>{
 	linearRRangeInput.value = linearRNormalNumInput.value = linearRNormal = gammaExpand255xSrgbValue(Rs);
 	linearGRangeInput.value = linearGNormalNumInput.value = linearGNormal = gammaExpand255xSrgbValue(Gs);
@@ -534,7 +531,7 @@ updateLinearRgbByNormalizedSrgb = ()=>{
 	linearGNumInput.value = linearG = linearGNormal*255;
 	linearBNumInput.value = linearB = linearBNormal*255;
 },
-updateHsyByLinearSrgb = ()=>{
+updateHsyByLinearRgb = ()=>{
 	if(linearRNormal === linearGNormal && linearGNormal === linearBNormal) {
 		H = degH = null;
 		HRangeInput.value = 1;
@@ -564,19 +561,19 @@ syncColorCode = e=>{
 	if(e.target.checkValidity() === false) return undefined;
 	updateSrgbByCode();
 	updateLinearRgbBySrgb();
-	updateHsyByLinearSrgb();
+	updateHsyByLinearRgb();
 },
 syncSrgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
 	updateCodeBySrgb();
 	updateLinearRgbBySrgb();
-	updateHsyByLinearSrgb();
+	updateHsyByLinearRgb();
 },
 syncNormalizedSrgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
 	updateCodeByNormalizedSrgb();
 	updateLinearRgbByNormalizedSrgb();
-	updateHsyByNormalizedSrgb();
+	updateHsyBylinearRgb();
 },
 srgb24ToHue = (R, G, B)=>{
 	if(R === G && R === B) return {minorRadH :null, minorDegH: null, radH: null, degH: null};
@@ -924,8 +921,7 @@ Rs = 188, Gs = 188, Bs = 188,
 RsNormal = 0.7372549019607844, GsNormal = 0.7372549019607844, BsNormal = 0.7372549019607844,
 linearR = 128.23604679830493, linearG = 128.23604679830493, linearB = 128.23604679830493,
 linearRNormal = 0.5028864580325684, linearGNormal = 0.5028864580325684, linearBNormal = 0.5028864580325684,
-minPrimary = null, linearMax = 0.5028864580325684, linearMin = 0.5028864580325684,
-linearDiff = 0, linearMaxPlusMin = 1.0057729160651368,
+linearMax = 0.5028864580325684, linearMin = 0.5028864580325684, linearDiff = 0,
 H = null, degH = null, radH = null, minorDegH = null, minorRadH = null, hInterval,
 S = 0, Y = 0.5028864580325684, pureY,
 pureRsNormal, pureGsNormal, pureBsNormal, pureLinearRNormal, pureLinearGNormal, pureLinearBNormal,
