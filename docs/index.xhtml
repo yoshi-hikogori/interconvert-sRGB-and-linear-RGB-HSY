@@ -179,8 +179,20 @@ body {
 	
 	<script>
 /*<![CDATA[*/
+(()=>{'use strict';
+globalThis.addEventListener('error', (errorEvent, {message, source, lineno, colno, error, stopPropagation} = errorEvent)=>{
+	globalThis.alert(errorEvent);
+	globalThis.alert(`${lineno} 行 ${colno} 列, ${error}\n"${message}"\n${source}`);
+}, {passive: true});
+})();
+(()=>{'use strict';
 
-(()=>{'use strict';try{
+globalThis.dispatchEvent(new ErrorEvent('error1', {
+	error: new Error('手作りエラー'),
+	message: 'Scriptで生成したエラー。',
+	lineno: 10,
+	filename : 'error1.html'
+}));
 
 const form = document.forms.form,
 syncGovernorBox = form.elements.syncGovernorBox,
@@ -990,7 +1002,7 @@ degHNumInput.addEventListener('change', syncDegH, eventOptions);
 HRangeInput.addEventListener('change', syncNormalizedH, eventOptions);
 HNormalNumInput.addEventListener('change', syncNormalizedH, eventOptions);
 
-}catch(e){window.alert(e);}
+
 })();
 
 /*]]>*/
