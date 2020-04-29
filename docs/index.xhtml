@@ -580,12 +580,12 @@ syncNormalizedSrgb = e=>{
 	updateHsyByLinearRgb();
 },
 updateSrgbByLinearRgb = ()=>{
-	RsNumInput.value = Rs = gammaCompressLinearValueTo255x(linearRNormal);
-	GsNumInput.value = Gs = gammaCompressLinearValueTo255x(linearRNormal);
-	BsNumInput.value = Bs = gammaCompressLinearValueTo255x(linearRNormal);
-	RsNormalNumInput.value = RsRangeInput.value = RsNormal = gammaCompressLinearValue(linearRNormal);
-	GsNormalNumInput.value = GsRangeInput.value = GsNormal = gammaCompressLinearValue(linearRNormal);
-	BsNormalNumInput.value = BsRangeInput.value = BsNormal = gammaCompressLinearValue(linearRNormal);
+	RNumInput.value = Rs = gammaCompressLinearValueTo255x(linearRNormal);
+	GNumInput.value = Gs = gammaCompressLinearValueTo255x(linearRNormal);
+	BNumInput.value = Bs = gammaCompressLinearValueTo255x(linearRNormal);
+	RNormalNumInput.value = RsRangeInput.value = RsNormal = gammaCompressLinearValue(linearRNormal);
+	GNormalNumInput.value = GsRangeInput.value = GsNormal = gammaCompressLinearValue(linearRNormal);
+	BNormalNumInput.value = BsRangeInput.value = BsNormal = gammaCompressLinearValue(linearRNormal);
 },
 syncLinearRgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
