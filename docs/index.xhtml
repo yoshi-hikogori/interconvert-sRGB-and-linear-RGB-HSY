@@ -187,11 +187,11 @@ globalThis.addEventListener('error', (errorEvent, {message, source, lineno, coln
 })();
 (()=>{'use strict';
 
-globalThis.dispatchEvent(new ErrorEvent('error1', {
+globalThis.dispatchEvent(new ErrorEvent('error', {
 	error: new Error('手作りエラー'),
 	message: 'Scriptで生成したエラー。',
 	lineno: 10,
-	filename : 'error1.html'
+	filename : 'index.xhtml'
 }));
 
 const form = document.forms.form,
