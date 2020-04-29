@@ -181,18 +181,10 @@ body {
 /*<![CDATA[*/
 (()=>{'use strict';
 globalThis.addEventListener('error', (errorEvent, {message, source, lineno, colno, error, stopPropagation} = errorEvent)=>{
-	globalThis.alert(errorEvent);
 	globalThis.alert(`${lineno} 行 ${colno} 列, ${error}\n"${message}"\n${source}`);
 }, {passive: true});
 })();
 (()=>{'use strict';
-
-globalThis.dispatchEvent(new ErrorEvent('error', {
-	error: new Error('手作りエラー'),
-	message: 'Scriptで生成したエラー。',
-	lineno: 10,
-	filename : 'index.xhtml'
-}));
 
 const form = document.forms.form,
 syncGovernorBox = form.elements.syncGovernorBox,
@@ -585,6 +577,20 @@ syncNormalizedSrgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
 	updateCodeByNormalizedSrgb();
 	updateLinearRgbByNormalizedSrgb();
+	updateHsyByLinearRgb();
+},
+updateSrgbByLinearRgb = ()=>{
+	RsNumInput.value = Rs = gammaCompressLinearValueTo255x(linearRNormal);
+	GsNumInput.value = Gs = gammaCompressLinearValueTo255x(linearRNormal);
+	BsNumInput.value = Bs = gammaCompressLinearValueTo255x(linearRNormal);
+	RsNormalNumInput.value = RsRangeInput.value = RsNormal = gammaCompressLinearValue(linearRNormal);
+	GsNormalNumInput.value = GsRangeInput.value = GsNormal = gammaCompressLinearValue(linearRNormal);
+	BsNormalNumInput.value = BsRangeInput.value = BsNormal = gammaCompressLinearValue(linearRNormal);
+},
+syncLinearRgb = e=>{
+	if(e.target.checkValidity() === false) return undefined;
+	updateSrgbByLinearRgb();
+	updateCodeBySrgb();
 	updateHsyByLinearRgb();
 },
 srgb24ToHue = (R, G, B)=>{
@@ -995,6 +1001,24 @@ addSyncCouldListener(BNormalNumInput, syncNormalizedSrgb);
 RNormalNumInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
 GNormalNumInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
 BNormalNumInput.addEventListener('change', syncNormalizedSrgb, eventOptions);
+addSyncCouldListener(linearRNumInput, syncLinearRgb);
+addSyncCouldListener(linearRNumInput, syncLinearRgb);
+addSyncCouldListener(linearBNumInput, syncLinearRgb);
+linearRNumInput.addEventListener('change', syncLinearRgb, eventOptions);
+linearGNumInput.addEventListener('change', syncLinearRgb, eventOptions);
+linearBNumInput.addEventListener('change', syncLinearRgb, eventOptions);
+addSyncCouldListener(linearRRangeInput, syncLinearRgb);
+addSyncCouldListener(linearRRangeInput, syncLinearRgb);
+addSyncCouldListener(linearBRangeInput, syncLinearRgb);
+linearRRangeInput.addEventListener('change', syncLinearRgb, eventOptions);
+linearGRangeInput.addEventListener('change', syncLinearRgb, eventOptions);
+linearBRangeInput.addEventListener('change', syncLinearRgb, eventOptions);
+addSyncCouldListener(linearRNormalNumInput, syncLinearRgb);
+addSyncCouldListener(linearRNormalNumInput, syncLinearRgb);
+addSyncCouldListener(linearBNormalNumInput, syncLinearRgb);
+linearRNormalNumInput.addEventListener('change', syncLinearRgb, eventOptions);
+linearGNormalNumInput.addEventListener('change', syncLinearRgb, eventOptions);
+linearBNormalNumInput.addEventListener('change', syncLinearRgb, eventOptions);
 addSyncCouldListener(degHNumInput, syncDegH);
 addSyncCouldListener(HRangeInput, syncNormalizedH);
 addSyncCouldListener(HNormalNumInput, syncNormalizedH);
