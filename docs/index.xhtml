@@ -581,11 +581,11 @@ syncNormalizedSrgb = e=>{
 },
 updateSrgbByLinearRgb = ()=>{
 	RNumInput.value = Rs = gammaCompressLinearValueTo255x(linearRNormal);
-	GNumInput.value = Gs = gammaCompressLinearValueTo255x(linearRNormal);
-	BNumInput.value = Bs = gammaCompressLinearValueTo255x(linearRNormal);
+	GNumInput.value = Gs = gammaCompressLinearValueTo255x(linearGNormal);
+	BNumInput.value = Bs = gammaCompressLinearValueTo255x(linearBNormal);
 	RNormalNumInput.value = RRangeInput.value = RsNormal = gammaCompressLinearValue(linearRNormal);
-	GNormalNumInput.value = GRangeInput.value = GsNormal = gammaCompressLinearValue(linearRNormal);
-	BNormalNumInput.value = BRangeInput.value = BsNormal = gammaCompressLinearValue(linearRNormal);
+	GNormalNumInput.value = GRangeInput.value = GsNormal = gammaCompressLinearValue(linearGNormal);
+	BNormalNumInput.value = BRangeInput.value = BsNormal = gammaCompressLinearValue(linearBNormal);
 },
 syncLinearRgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
