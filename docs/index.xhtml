@@ -583,9 +583,9 @@ updateSrgbByLinearRgb = ()=>{
 	RNumInput.value = Rs = gammaCompressLinearValueTo255x(linearRNormal);
 	GNumInput.value = Gs = gammaCompressLinearValueTo255x(linearRNormal);
 	BNumInput.value = Bs = gammaCompressLinearValueTo255x(linearRNormal);
-	RNormalNumInput.value = RsRangeInput.value = RsNormal = gammaCompressLinearValue(linearRNormal);
-	GNormalNumInput.value = GsRangeInput.value = GsNormal = gammaCompressLinearValue(linearRNormal);
-	BNormalNumInput.value = BsRangeInput.value = BsNormal = gammaCompressLinearValue(linearRNormal);
+	RNormalNumInput.value = RRangeInput.value = RsNormal = gammaCompressLinearValue(linearRNormal);
+	GNormalNumInput.value = GRangeInput.value = GsNormal = gammaCompressLinearValue(linearRNormal);
+	BNormalNumInput.value = BRangeInput.value = BsNormal = gammaCompressLinearValue(linearRNormal);
 },
 syncLinearRgb = e=>{
 	if(e.target.checkValidity() === false) return undefined;
