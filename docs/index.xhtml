@@ -97,7 +97,7 @@ body {
 
 <body>
 	<header id="header" class="Header">
-		<p class="Header_text">0.2.0 版、最終更新：2020/06/06</p>
+		<p class="Header_text">0.2.1 版、最終更新：2020/06/06</p>
 	</header>
 		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値・配色属性 HSYの相互変換.xhtml</h1>
 		<p class="Main_beginning">各値を直接またはスライダーでその割合を入力して、<!--
@@ -733,72 +733,108 @@ updateLinearRgbByHsy = ()=>{
 		if(degH < 180) {
 			if(degH < 60) {
 				degHToPureYTmpD[0]();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value;
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value;
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value;
 			} else if(degH < 120) {
 				degHToPureYTmpD[1]();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMax;
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMid;
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMin;
 			} else{
 				degHToPureYTmpD[2]();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMax;
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMid;
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMin;
 			}
 		} else{
 			if(degH < 240) {
 				degHToPureYTmpD[3]();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMax;
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMid;
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMin;
 			} else if(degH < 300) {
 				degHToPureYTmpD[4]();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMax;
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMid;
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMin;
 			} else{
 				degHToPureYTmpD[5]();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMax;
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMid;
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMin;
 			}
 		}
 	} else{
 		if(H < 0.5) {
 			if(H <= 0.16666666666666666) {
 				HToPureYTmpD[0]();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMax;
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMid;
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMin;
 			} else if(H <= 0.3333333333333333) {
 				HToPureYTmpD[1]();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMax;
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMid;
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMin;
 			} else{
 				HToPureYTmpD[2]();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMax;
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMid;
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMin;
 			}
 		} else{
 			if(H <= 0.6666666666666666) {
 				HToPureYTmpD[3]();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMax;
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMid;
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMin;
 			} else if(H < 0.8333333333333334) {
 				HToPureYTmpD[4]();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMax;
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMid;
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMin;
 			} else{
 				HToPureYTmpD[5]();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMaxBySYPureY();
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMinBySYPureY();
+				calculateLinearMaxBySYPureY();
+				calculateLinearMidBySYPureYTmpD();
+				calculateLinearMinBySYPureY();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMax;
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMid;
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMin;
 			}
 		}
 	}
