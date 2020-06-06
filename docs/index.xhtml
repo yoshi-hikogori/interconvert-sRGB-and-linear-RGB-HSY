@@ -97,7 +97,7 @@ body {
 
 <body>
 	<header id="header" class="Header">
-		<p class="Header_text">0.1.6 版、最終更新：2020/04/27</p>
+		<p class="Header_text">0.2.0 版、最終更新：2020/06/06</p>
 	</header>
 		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値・配色属性 HSYの相互変換.xhtml</h1>
 		<p class="Main_beginning">各値を直接またはスライダーでその割合を入力して、<!--
@@ -186,7 +186,10 @@ globalThis.addEventListener('error', (errorEvent, {message, source, lineno, coln
 })();
 (()=>{'use strict';
 
-const form = document.forms.form,
+const Kr = 0.21263900587151,
+Kg = 0.71516867876776,
+Kb = 0.07219231536073,
+form = document.forms.form,
 syncGovernorBox = form.elements.syncGovernorBox,
 colorPickInput = form.elements.colorPickInput,
 colorCodeInput = form.elements.colorCodeInput,
@@ -241,6 +244,7 @@ toggleSyncMode = e=>{
 colorPickInterfaces = e=>{
 	combinedHexCode = colorPickInput.value.slice(1);
 	colorCodeHexValue = +`0x${combinedHexCode}`;
+	degHHasPriority = false;
 	if(outputsLowerCase === false) {
 		if(prefixesColorCode === false) return colorCodeInput.value = combinedHexCode.toUpperCase();
 		return colorCodeInput.value = `#${combinedHexCode.toUpperCase()}`;
@@ -254,6 +258,7 @@ colorCodeInterfaces = e=>{
 		/[０-９ａ-ｆＡ-Ｆ]/g,
 		(s)=> String.fromCharCode(s.charCodeAt(0) - 65248)
 	);
+	degHHasPriority = false;
 	if(combinedHexCode.length === 6) {
 		colorPickInput.value = `#${combinedHexCode}`;
 		colorCodeHexValue = +`0x${combinedHexCode}`;
@@ -292,6 +297,7 @@ RNumInterfaces = e=>{
 	Rs = RNumInput.valueAsNumber;
 	RsNormal = Rs/255;
 	RRangeInput.value = RNormalNumInput.value = RsNormal;
+	degHHasPriority = false;
 },
 RRangeInterfaces = e=>{
 	if(RRangeInput.checkValidity() === false) return undefined;
@@ -299,6 +305,7 @@ RRangeInterfaces = e=>{
 	Rs = 255*RsNormal;
 	RNumInput.value = Rs;
 	RNormalNumInput.value = RsNormal;
+	degHHasPriority = false;
 },
 RNormalInterfaces = e=>{
 	if(RNormalNumInput.value === '' || RNormalNumInput.checkValidity() === false) return undefined;
@@ -306,12 +313,14 @@ RNormalInterfaces = e=>{
 	Rs = 255*RsNormal;
 	RNumInput.value = Rs;
 	RRangeInput.value = RsNormal;
+	degHHasPriority = false;
 },
 GNumInterfaces = e=>{
 	if(GNumInput.value === '' || GNumInput.checkValidity() === false) return undefined;
 	Gs = GNumInput.valueAsNumber;
 	GsNormal = Gs/255;
 	GRangeInput.value = GNormalNumInput.value = GsNormal;
+	degHHasPriority = false;
 },
 GRangeInterfaces = e=>{
 	if(GRangeInput.checkValidity() === false) return undefined;
@@ -319,6 +328,7 @@ GRangeInterfaces = e=>{
 	Gs = 255*GsNormal;
 	GNumInput.value = Gs;
 	GNormalNumInput.value = GsNormal;
+	degHHasPriority = false;
 },
 GNormalInterfaces = e=>{
 	if(GNormalNumInput.value === '' || GNormalNumInput.checkValidity() === false) return undefined;
@@ -326,12 +336,14 @@ GNormalInterfaces = e=>{
 	Gs = 255*GsNormal;
 	GNumInput.value = Gs;
 	GRangeInput.value = GsNormal;
+	degHHasPriority = false;
 },
 BNumInterfaces = e=>{
 	if(BNumInput.value === '' || BNumInput.checkValidity() === false) return undefined;
 	Bs = BNumInput.valueAsNumber;
 	BsNormal = Bs/255;
 	BRangeInput.value = BNormalNumInput.value = BsNormal;
+	degHHasPriority = false;
 },
 BRangeInterfaces = e=>{
 	if(BRangeInput.checkValidity() === false) return undefined;
@@ -339,6 +351,7 @@ BRangeInterfaces = e=>{
 	Bs = 255*BsNormal;
 	BNumInput.value = Bs;
 	BNormalNumInput.value = BsNormal;
+	degHHasPriority = false;
 },
 BNormalInterfaces = e=>{
 	if(BNormalNumInput.value === '' || BNormalNumInput.checkValidity() === false) return undefined;
@@ -346,12 +359,14 @@ BNormalInterfaces = e=>{
 	Bs = 255*BsNormal;
 	BNumInput.value = Bs;
 	BRangeInput.value = BsNormal;
+	degHHasPriority = false;
 },
 linearRNumInterfaces = e=>{
 	if(linearRNumInput.value === '' || linearRNumInput.checkValidity() === false) return undefined;
 	linearR = linearRNumInput.valueAsNumber;
 	linearRNormal = linearR/255;
 	linearRRangeInput.value = linearRNormalNumInput.value = linearRNormal;
+	degHHasPriority = false;
 },
 linearRRangeInterfaces = e=>{
 	if(linearRRangeInput.checkValidity() === false) return undefined;
@@ -359,6 +374,7 @@ linearRRangeInterfaces = e=>{
 	linearR = 255*linearRNormal;
 	linearRNumInput.value = linearR;
 	linearRNormalNumInput.value = linearRNormal;
+	degHHasPriority = false;
 },
 linearRNormalInterfaces = e=>{
 	if(linearRNormalNumInput.value === '' || linearRNormalNumInput.checkValidity() === false) return undefined;
@@ -366,12 +382,14 @@ linearRNormalInterfaces = e=>{
 	linearR = 255*linearRNormal;
 	linearRNumInput.value = linearR;
 	linearRRangeInput.value = linearRNormal;
+	degHHasPriority = false;
 },
 linearGNumInterfaces = e=>{
 	if(linearGNumInput.value === '' || linearGNumInput.checkValidity() === false) return undefined;
 	linearG = linearGNumInput.valueAsNumber;
 	linearGNormal = linearG/255;
 	linearGRangeInput.value = linearGNormalNumInput.value = linearGNormal;
+	degHHasPriority = false;
 },
 linearGRangeInterfaces = e=>{
 	if(linearGRangeInput.checkValidity() === false) return undefined;
@@ -379,6 +397,7 @@ linearGRangeInterfaces = e=>{
 	linearG = 255*linearGNormal;
 	linearGNumInput.value = linearG;
 	linearGNormalNumInput.value = linearGNormal;
+	degHHasPriority = false;
 },
 linearGNormalInterfaces = e=>{
 	if(linearGNormalNumInput.value === '' || linearGNormalNumInput.checkValidity() === false) return undefined;
@@ -386,12 +405,14 @@ linearGNormalInterfaces = e=>{
 	linearG = 255*linearGNormal;
 	linearGNumInput.value = linearG;
 	linearGRangeInput.value = linearGNormal;
+	degHHasPriority = false;
 },
 linearBNumInterfaces = e=>{
 	if(linearBNumInput.value === '' || linearBNumInput.checkValidity() === false) return undefined;
 	linearB = linearBNumInput.valueAsNumber;
 	linearBNormal = linearB/255;
 	linearBRangeInput.value = linearBNormalNumInput.value = linearBNormal;
+	degHHasPriority = false;
 },
 linearBRangeInterfaces = e=>{
 	if(linearBRangeInput.checkValidity() === false) return undefined;
@@ -399,6 +420,7 @@ linearBRangeInterfaces = e=>{
 	linearB = 255*linearBNormal;
 	linearBNumInput.value = linearB;
 	linearBNormalNumInput.value = linearBNormal;
+	degHHasPriority = false;
 },
 linearBNormalInterfaces = e=>{
 	if(linearBNormalNumInput.value === '' || linearBNormalNumInput.checkValidity() === false) return undefined;
@@ -406,9 +428,11 @@ linearBNormalInterfaces = e=>{
 	linearB = 255*linearBNormal;
 	linearBNumInput.value = linearB;
 	linearBRangeInput.value = linearBNormal;
+	degHHasPriority = false;
 },
 degHInterfaces = e=>{
 	if(degHNumInput.checkValidity() === false) return undefined;
+	degHHasPriority = true;
 	degH = degHNumInput.valueAsNumber;
 	if(degH === 360 || degHNumInput.value === '') {
 		H = degH = null;
@@ -419,6 +443,7 @@ degHInterfaces = e=>{
 },
 HRangeInterfaces = e=>{
 	if(HRangeInput.checkValidity() === false) return undefined;
+	degHHasPriority = false;
 	H = HRangeInput.valueAsNumber;
 	if(H === 1) {
 		H = degH = null;
@@ -430,6 +455,7 @@ HRangeInterfaces = e=>{
 },
 HNormalInterfaces = e=>{
 	if(HNormalNumInput.checkValidity() === false) return undefined;
+	degHHasPriority = false;
 	HRangeInput.value = H = HNormalNumInput.valueAsNumber;
 	if(H === 1 || HNormalNumInput.value === '') {
 		H = degH = null;
@@ -541,7 +567,8 @@ updateHsyByLinearRgb = ()=>{
 		HRangeInput.value = 1;
 		degHNumInput.value = HNormalNumInput.value = '';
 		SNumInput.value = SRangeInput.value = S = 0;
-		return YNumInput.value = YRangeInput.value = Y = linearRNormal*3;
+		return YNumInput.value = YRangeInput.value = (
+		Y = Kr*linearRNormal + Kg*linearGNormal + Kb*linearBNormal);
 	}
 	linearMax = Math.max(linearRNormal, linearGNormal, linearBNormal);
 	linearMin = Math.min(linearRNormal, linearGNormal, linearBNormal);
@@ -558,8 +585,8 @@ updateHsyByLinearRgb = ()=>{
 	}
 	SNumInput.value = SRangeInput.value = S = linearDiff/(1 - Math.abs(linearMax + linearMin - 1));
 	YNumInput.value = YRangeInput.value = Y = (
-		0.21263900587151*linearRNormal + 0.71516867876776*linearGNormal +
-	0.07219231536073*linearBNormal);
+		Kr*linearRNormal + Kg*linearGNormal +
+	Kb*linearBNormal);
 },
 syncColorCode = e=>{
 	if(e.target.checkValidity() === false) return undefined;
@@ -593,342 +620,197 @@ syncLinearRgb = e=>{
 	updateCodeBySrgb();
 	updateHsyByLinearRgb();
 },
-srgb24ToHue = (R, G, B)=>{
-	if(R === G && R === B) return {minorRadH :null, minorDegH: null, radH: null, degH: null};
-	const minorRadH = Math.atan2(Math.sqrt(3)*(G - B), 2*R - G - B),
-	minorDegH = Math.atan2(
-		Math.sqrt(3)*(G - B), 2*R - G - B
-	) *180/Math.PI;
-	return {
-		minorRadH,
-		minorDegH,
-		radH: (minorRadH >= 0)? minorRadH : minorRadH + 2*Math.PI,
-		degH: (minorDegH >= 0)? minorDegH : minorDegH + 360
-	};
+HToPureYTmpD = [
+	/* pureY = (明度最大の原色の係数) + (明度中間の原色の係数)*(明度中間の原色の、純色での明度)
+	 * tmpD = (明度中間の原色の、純色での明度) - pureY */
+	()=> {
+		pureLinearRNormal = 1;
+		pureLinearMid = pureLinearGNormal = 6*H;
+		pureLinearBNormal = 0;
+		pureY = 0.21263900587151 + 4.2910120726066*H;
+		tmpD = 1.7089879273934*H - 0.21263900587151;
+	},
+	()=> {
+		pureLinearMid = pureLinearRNormal = 2 - 6*H;
+		pureLinearGNormal = 1;
+		pureLinearBNormal = 0;
+		pureY = 1.1404466905108 - 1.2758340352291*H;
+		tmpD = 0.85955330948922 - 4.7241659647709*H;
+	},
+	()=> {
+		pureLinearRNormal = 0;
+		pureLinearGNormal = 1;
+		pureLinearMid = pureLinearBNormal = 6*H - 2;
+		pureY = 0.5707840480463 + 0.4331538921644*H;
+		tmpD = 5.5668461078356*H - 2.5707840480463;
+	},
+	()=> {
+		pureLinearRNormal = 0;
+		pureLinearMid = pureLinearGNormal = 4 - 6*H;
+		pureLinearBNormal = 1;
+		pureY = 2.93286703043177 - 4.2910120726066*H;
+		tmpD = 1.06713296956823 - 1.7089879273934*H;
+	},
+	()=> {
+		pureLinearMid = pureLinearRNormal = 6*H - 4;
+		pureLinearGNormal = 0;
+		pureLinearBNormal = 1;
+		pureY = 1.2758340352291*H - 0.77836370812531;
+		tmpD = 4.7241659647709*H - 3.22163629187469;
+	},
+	()=> {
+		pureLinearRNormal = 1;
+		pureLinearGNormal = 0;
+		pureLinearMid = pureLinearBNormal = 6 - 6*H;
+		pureY = 0.64579289803589 - 0.4331538921644*H;
+		tmpD = 5.35420710196411 - 5.5668461078356*H;
+	}
+],
+degHToPureYTmpD = [
+	/* pureY = (明度最大の原色の係数) + (明度中間の原色の係数)*(明度中間の原色の、純色での明度)
+	 * tmpD = (明度中間の原色の、純色での明度) - pureY */
+	()=> {
+		pureLinearRNormal = 1;
+		pureLinearMid = pureLinearGNormal = degH/60;
+		pureLinearBNormal = 0;
+		pureY = 0.21263900587151 + 0.71516867876776*degH/60;
+		tmpD = 0.28483132123224*degH/60 - 0.21263900587151;
+	},
+	()=> {
+		pureLinearMid = pureLinearRNormal = 2 - degH/60;
+		pureLinearGNormal = 1;
+		pureLinearBNormal = 0;
+		pureY = 1.14044669051078 - 0.21263900587151*degH/60;
+		tmpD = 0.85955330948922 - 0.78736099412849*degH/60;
+	},
+	()=> {
+		pureLinearRNormal = 0;
+		pureLinearGNormal = 1;
+		pureLinearMid = pureLinearBNormal = degH/60 - 2;
+		pureY = 0.5707840480463 + 0.07219231536073*degH/60;
+		tmpD = 0.92780768463927*degH/60 - 2.5707840480463;
+	},
+	()=> {
+		pureLinearRNormal = 0;
+		pureLinearMid = pureLinearGNormal = 4 - degH/60;
+		pureLinearBNormal = 1;
+		pureY = 2.93286703043177 - 0.71516867876776*degH/60;
+		tmpD = 1.06713296956823 - 0.28483132123224*degH/60;
+	},
+	()=> {
+		pureLinearMid = pureLinearRNormal = degH/60 - 4;
+		pureLinearGNormal = 0;
+		pureLinearBNormal = 1;
+		pureY = 0.21263900587151*degH/60 - 0.77836370812531;
+		tmpD = 0.78736099412849*degH/60 - 3.22163629187469;
+	},
+	()=> {
+		pureLinearRNormal = 1;
+		pureLinearGNormal = 0;
+		pureLinearMid = pureLinearBNormal = 6 - degH/60;
+		pureY = 0.64579289803589 - 0.07219231536073*degH/60;
+		tmpD = 5.35420710196411 - 0.92780768463927*degH/60;
+	}
+],
+calculateLinearMaxBySYPureY = ()=>{
+	linearMax = Y + (1 - pureY)*S;
 },
-positiveNormalize = x=> (x > 0)? x : 0,
-minorRadHToPureSrgbY = [
-	()=> {
-		pureRsNormal = pureLinearRNormal = 1;
-		pureGsNormal = positiveNormalize(3*minorRadH/Math.PI);
-		pureBsNormal = pureLinearBNormal = 0;
-		pureLinearGNormal = gammaExpandNormalizedSrgbValue(pureGsNormal);
-		pureY = 0.2126 + 0.7152*pureLinearGNormal;
-	},
-	()=> {
-		pureRsNormal = positiveNormalize(2 - 3*minorRadH/Math.PI);
-		pureGsNormal = pureLinearGNormal = 1;
-		pureBsNormal = pureLinearBNormal = 0;
-		pureLinearRNormal = gammaExpandNormalizedSrgbValue(pureRsNormal);
-		pureY = 0.7152 + 0.2126*pureLinearRNormal;
-	},
-	()=> {
-		pureRsNormal = pureLinearRNormal = 0;
-		pureGsNormal = pureLinearGNormal = 1;
-		pureBsNormal = positiveNormalize(3*minorRadH/Math.PI - 2);
-		pureLinearBNormal = gammaExpandNormalizedSrgbValue(pureBsNormal);
-		pureY = 0.7152 + 0.0722*pureLinearBNormal;
-	},
-	()=> {
-		pureRsNormal = pureLinearRNormal = 0;
-		pureGsNormal = positiveNormalize(3*Math.abs(minorRadH)/Math.PI - 2);
-		pureBsNormal = pureLinearBNormal = 1;
-		pureLinearGNormal = gammaExpandNormalizedSrgbValue(pureGsNormal);
-		pureY = 0.0722 + 0.7152*pureLinearGNormal;
-	},
-	()=> {
-		pureRsNormal = positiveNormalize(3*minorRadH/Math.PI + 2);
-		pureGsNormal = pureLinearGNormal = 0;
-		pureBsNormal = pureLinearBNormal = 1;
-		pureLinearRNormal = gammaExpandNormalizedSrgbValue(pureRsNormal);
-		pureY = 0.0722 + 0.2126*pureLinearRNormal;
-	},
-	()=> {
-		pureY = 0.2126 - gammaExpandNormalizedSrgbValue(0.2166*minorRadH/Math.PI);
-		pureRsNormal = pureLinearRNormal = 1;
-		pureGsNormal = pureLinearGNormal = 0;
-		pureBsNormal = positiveNormalize(-3*minorRadH/Math.PI);
-		pureLinearBNormal = gammaExpandNormalizedSrgbValue(pureBsNormal);
-	}
-],
-radHToPureSrgbY = [
-	()=> {
-		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(2.1456*radH/Math.PI);
-		pureRsNormal = pureLinearRNormal = 1;
-		pureGsNormal = positiveNormalize(3*radH/Math.PI);
-		pureBsNormal = pureLinearBNormal = 0;
-		pureLinearGNormal = gammaExpandNormalizedSrgbValue(pureGsNormal);
-	},
-	()=> {
-		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.4252 - 0.6378*radH/Math.PI);
-		pureRsNormal = positiveNormalize(2 - 3*radH/Math.PI);
-		pureGsNormal = pureLinearGNormal = 1;
-		pureBsNormal = pureLinearBNormal = 0;
-		pureLinearRNormal = gammaExpandNormalizedSrgbValue(pureRsNormal);
-	},
-	()=> {
-		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.2166*radH/Math.PI - 0.1444);
-		pureRsNormal = pureLinearRNormal = 0;
-		pureGsNormal = pureLinearGNormal = 1;
-		pureBsNormal = positiveNormalize(3*radH/Math.PI - 2);
-		pureLinearBNormal = gammaExpandNormalizedSrgbValue(pureBsNormal);
-	},
-	()=> {
-		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(2.8608 - 2.1456*radH/Math.PI);
-		pureRsNormal = pureLinearRNormal = 0;
-		pureGsNormal = positiveNormalize(4 - 3*radH/Math.PI);
-		pureBsNormal = pureLinearBNormal = 1;
-		pureLinearGNormal = gammaExpandNormalizedSrgbValue(pureGsNormal);
-	},
-	()=> {
-		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(0.6378*radH/Math.PI - 0.8504);
-		pureRsNormal = positiveNormalize(3*radH/Math.PI - 4);
-		pureGsNormal = pureLinearGNormal = 0;
-		pureBsNormal = pureLinearBNormal = 1;
-		pureLinearRNormal = gammaExpandNormalizedSrgbValue(pureRsNormal);
-	},
-	()=> {
-		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(0.2166*radH/Math.PI - 0.4332);
-		pureRsNormal = pureLinearRNormal = 1;
-		pureGsNormal = pureLinearGNormal = 0;
-		pureBsNormal = positiveNormalize(3*radH/Math.PI - 6);
-		pureLinearBNormal = gammaExpandNormalizedSrgbValue(pureBsNormal);
-	}
-],
-minorDegHToPureSrgbY = [
-	()=> {
-		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(0.01192*minorDegH);
-		pureRsNormal = pureLinearRNormal = 1;
-		pureGsNormal = positiveNormalize(minorDegH/60);
-		pureBsNormal = pureLinearBNormal = 0;
-		pureLinearGNormal = gammaExpandNormalizedSrgbValue(pureGsNormal);
-	},
-	()=> {
-		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.4252 - 0.2126*minorDegH/60);
-		pureRsNormal = positiveNormalize(2 - minorDegH/60);
-		pureGsNormal = pureLinearGNormal = 1;
-		pureBsNormal = pureLinearBNormal = 0;
-		pureLinearRNormal = gammaExpandNormalizedSrgbValue(pureRsNormal);
-	},
-	()=> {
-		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.0722*minorDegH/60 - 0.1444);
-		pureRsNormal = pureLinearRNormal = 0;
-		pureGsNormal = pureLinearGNormal = 1;
-		pureBsNormal = positiveNormalize(minorDegH/60 - 2);
-		pureLinearBNormal = gammaExpandNormalizedSrgbValue(pureBsNormal);
-	},
-	()=> {
-		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(0.01192*Math.abs(minorDegH) - 1.4304);
-		pureRsNormal = pureLinearRNormal = 0;
-		pureGsNormal = positiveNormalize(Math.abs(minorDegH)/60 - 2);
-		pureBsNormal = pureLinearBNormal = 1;
-		pureLinearGNormal = gammaExpandNormalizedSrgbValue(pureGsNormal);
-	},
-	()=> {
-		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(0.2126*minorDegH/60 + 0.4252);
-		pureRsNormal = positiveNormalize(minorDegH/60 + 2);
-		pureGsNormal = pureLinearGNormal = 0;
-		pureBsNormal = pureLinearBNormal = 1;
-		pureLinearRNormal = gammaExpandNormalizedSrgbValue(pureRsNormal);
-	},
-	()=> {
-		pureY = 0.2126 - gammaExpandNormalizedSrgbValue(0.0722*minorDegH/60);
-		pureRsNormal = pureLinearRNormal = 1;
-		pureGsNormal = pureLinearGNormal = 0;
-		pureBsNormal = positiveNormalize(-minorDegH/60);
-		pureLinearBNormal = gammaExpandNormalizedSrgbValue(pureBsNormal);
-	}
-],
-degHToPureSrgbY = [
-	()=> {
-		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(0.01192*degH);
-		pureRsNormal = pureLinearRNormal = 1;
-		pureGsNormal = positiveNormalize(degH/60);
-		pureBsNormal = pureLinearBNormal = 0;
-		pureLinearGNormal = gammaExpandNormalizedSrgbValue(pureGsNormal);
-	},
-	()=> {
-		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.4252 - 0.2126*degH/60);
-		pureRsNormal = positiveNormalize(2 - degH/60);
-		pureGsNormal = pureLinearGNormal = 1;
-		pureBsNormal = pureLinearBNormal = 0;
-		pureLinearRNormal = gammaExpandNormalizedSrgbValue(pureRsNormal);
-	},
-	()=> {
-		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.0722*degH/60 - 0.1444);
-		pureRsNormal = pureLinearRNormal = 0;
-		pureGsNormal = pureLinearGNormal = 1;
-		pureBsNormal = positiveNormalize(degH/60 - 2);
-		pureLinearBNormal = gammaExpandNormalizedSrgbValue(pureBsNormal);
-	},
-	()=> {
-		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(2.8608 - 0.01192*degH);
-		pureRsNormal = pureLinearRNormal = 0;
-		pureGsNormal = positiveNormalize(4 - degH/60);
-		pureBsNormal = pureLinearBNormal = 1;
-		pureLinearGNormal = gammaExpandNormalizedSrgbValue(pureGsNormal);
-	},
-	()=> {
-		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(0.2126*degH/60 - 0.8504);
-		pureRsNormal = positiveNormalize(degH/60 - 4);
-		pureGsNormal = pureLinearGNormal = 0;
-		pureBsNormal = pureLinearBNormal = 1;
-		pureLinearRNormal = gammaExpandNormalizedSrgbValue(pureRsNormal);
-	},
-	()=> {
-		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(0.4332 - 0.0722*degH/60);
-		pureRsNormal = pureLinearRNormal = 1;
-		pureGsNormal = pureLinearGNormal = 0;
-		pureBsNormal = positiveNormalize(6 - degH/60);
-		pureLinearBNormal = gammaExpandNormalizedSrgbValue(pureBsNormal);
-	}
-],
-HToPureSrgbY = [
-	()=> {
-		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(4.2912*H);
-		pureRsNormal = pureLinearRNormal = 1;
-		pureGsNormal = positiveNormalize(6*H);
-		pureBsNormal = pureLinearBNormal = 0;
-		pureLinearGNormal = gammaExpandNormalizedSrgbValue(pureGsNormal);
-	},
-	()=> {
-		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.4252 - 1.2756*H);
-		pureRsNormal = positiveNormalize(2 - 6*H);
-		pureGsNormal = pureLinearGNormal = 1;
-		pureBsNormal = pureLinearBNormal = 0;
-		pureLinearRNormal = gammaExpandNormalizedSrgbValue(pureRsNormal);
-	},
-	()=> {
-		pureY = 0.7152 + gammaExpandNormalizedSrgbValue(0.4332*H - 0.1444);
-		pureRsNormal = pureLinearRNormal = 0;
-		pureGsNormal = pureLinearGNormal = 1;
-		pureBsNormal = positiveNormalize(6*H - 2);
-		pureLinearBNormal = gammaExpandNormalizedSrgbValue(pureBsNormal);
-	},
-	()=> {
-		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(2.8608 - 4.2912*H);
-		pureRsNormal = pureLinearRNormal = 0;
-		pureGsNormal = positiveNormalize(4 - 6*H);
-		pureBsNormal = pureLinearBNormal = 1;
-		pureLinearGNormal = gammaExpandNormalizedSrgbValue(pureGsNormal);
-	},
-	()=> {
-		pureY = 0.0722 + gammaExpandNormalizedSrgbValue(1.2756*H - 0.8504);
-		pureRsNormal = positiveNormalize(6*H - 4);
-		pureGsNormal = pureLinearGNormal = 0;
-		pureBsNormal = pureLinearBNormal = 1;
-		pureLinearRNormal = gammaExpandNormalizedSrgbValue(pureRsNormal);
-	},
-	()=> {
-		pureY = 0.2126 + gammaExpandNormalizedSrgbValue(0.4332*(1 - H));
-		pureRsNormal = pureLinearRNormal = 1;
-		pureGsNormal = pureLinearGNormal = 0;
-		pureBsNormal = positiveNormalize(6*(1 - H));
-		pureLinearBNormal = gammaExpandNormalizedSrgbValue(pureBsNormal);
-	}
-],
-calculatePureYSrgbByNormalizedH = ()=>{
-	hInterval = (6*H | 0);
-	HToPureSrgbY[hInterval]();
+calculateLinearMidBySYPureYTmpD = ()=>{
+	linearMid = Y + tmpD*S;
 },
-calculatePureYSrgbByRadH = ()=>{
-	hInterval = (3*radH/Math.PI | 0);
-	radHToPureSrgbY[hInterval]();
+calculateLinearMinBySYPureY = ()=>{
+	linearMin = Y - pureY*S;
 },
-calculatePureYSrgbByDegH = ()=>{
-	hInterval = (degH/60 | 0);
-	degHToPureSrgbY[hInterval]();
-}/*
-updateSrgbByRadHY = ()=>{
-	if(radH === null) {
-		Rs = Gs = Bs = RNumInput.value = GNumInput.value = BNumInput.value = gammaCompressLinearValueTo255x(Y);
-		RsNormal = GsNormal = BsNormal = RRangeInput.value = GRangeInput.value = BRangeInput.value = (
-			RNormalNumInput.value = GNormalNumInput.value = BNormalNumInput.value = gammaCompressLinearValue(Y)
-		);
-		return undefined;
-	}
-	calculatePureYSrgbByRadH();
-	if(pureY >= Y) {
-		pureProportion = Y/pureY;
-		linearRNormal = pureLinearRNormal*Y/pureY;
-		linearGNormal = pureLinearGNormal*Y/pureY;
-		linearBNormal = pureLinearBNormal*Y/pureY;
-	} else{
-		pureProportion = (Y - pureY)/(1 - pureY);
-		linearRNormal = pureLinearRNormal + (1 - pureLinearRNormal)*(Y - pureY)/(1 - pureY);
-		linearGNormal = pureLinearGNormal + (1 - pureLinearGNormal)*(Y - pureY)/(1 - pureY);
-		linearBNormal = pureLinearBNormal + (1 - pureLinearBNormal)*(Y - pureY)/(1 - pureY);
-	}
-	Rs = RNumInput.value = gammaCompressLinearValueTo255x(linearRNormal);
-	Gs = GNumInput.value = gammaCompressLinearValueTo255x(linearGNormal);
-	Bs = BNumInput.value = gammaCompressLinearValueTo255x(linearBNormal);
-	RsNormal = RRangeInput.value = RNormalNumInput.value = gammaCompressLinearValue(linearRNormal);
-	GsNormal = GRangeInput.value = GNormalNumInput.value = gammaCompressLinearValue(linearGNormal);
-	BsNormal = BRangeInput.value = BNormalNumInput.value = gammaCompressLinearValue(linearBNormal);
-}*/,
-updateSrgbByHY = ()=>{
+updateLinearRgbByHsy = ()=>{
 	if(H === null) {
-		Rs = Gs = Bs = RNumInput.value = GNumInput.value = BNumInput.value = gammaCompressLinearValueTo255x(Y);
-		RsNormal = GsNormal = BsNormal = RRangeInput.value = GRangeInput.value = BRangeInput.value = (
-			RNormalNumInput.value = GNormalNumInput.value = BNormalNumInput.value = gammaCompressLinearValue(Y)
+		linearR = linearG = linearB = linearRNumInput.value = linearGNumInput.value = linearBNumInput.value = 255*Y;
+		linearRNormal = linearGNormal = linearBNormal = linearRRangeInput.value = linearGRangeInput.value = linearBRangeInput.value = (
+			linearRNormalNumInput.value = linearGNormalNumInput.value = linearBNormalNumInput.value = Y
 		);
 		return undefined;
 	}
-	calculatePureYSrgbByNormalizedH();
-	if(pureY >= Y) {
-		pureProportion = Y/pureY;
-		linearRNormal = pureLinearRNormal*Y/pureY;
-		linearGNormal = pureLinearGNormal*Y/pureY;
-		linearBNormal = pureLinearBNormal*Y/pureY;
+	if(degHHasPriority === true) {
+		if(degH < 180) {
+			if(degH < 60) {
+				degHToPureYTmpD[0]();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMinBySYPureY();
+			} else if(degH < 120) {
+				degHToPureYTmpD[1]();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMinBySYPureY();
+			} else{
+				degHToPureYTmpD[2]();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMinBySYPureY();
+			}
+		} else{
+			if(degH < 240) {
+				degHToPureYTmpD[3]();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMinBySYPureY();
+			} else if(degH < 300) {
+				degHToPureYTmpD[4]();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMinBySYPureY();
+			} else{
+				degHToPureYTmpD[5]();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMinBySYPureY();
+			}
+		}
 	} else{
-		pureProportion = (Y - pureY)/(1 - pureY);
-		linearRNormal = pureLinearRNormal + (1 - pureLinearRNormal)*(Y - pureY)/(1 - pureY);
-		linearGNormal = pureLinearGNormal + (1 - pureLinearGNormal)*(Y - pureY)/(1 - pureY);
-		linearBNormal = pureLinearBNormal + (1 - pureLinearBNormal)*(Y - pureY)/(1 - pureY);
+		if(H < 0.5) {
+			if(H <= 0.16666666666666666) {
+				HToPureYTmpD[0]();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMinBySYPureY();
+			} else if(H <= 0.3333333333333333) {
+				HToPureYTmpD[1]();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMinBySYPureY();
+			} else{
+				HToPureYTmpD[2]();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMinBySYPureY();
+			}
+		} else{
+			if(H <= 0.6666666666666666) {
+				HToPureYTmpD[3]();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMinBySYPureY();
+			} else if(H < 0.8333333333333334) {
+				HToPureYTmpD[4]();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMinBySYPureY();
+			} else{
+				HToPureYTmpD[5]();
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = calculateLinearMaxBySYPureY();
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = calculateLinearMidBySYPureYTmpD();
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = calculateLinearMinBySYPureY();
+			}
+		}
 	}
-	Rs = RNumInput.value = gammaCompressLinearValueTo255x(linearRNormal);
-	Gs = GNumInput.value = gammaCompressLinearValueTo255x(linearGNormal);
-	Bs = BNumInput.value = gammaCompressLinearValueTo255x(linearBNormal);
-	RsNormal = RRangeInput.value = RNormalNumInput.value = gammaCompressLinearValue(linearRNormal);
-	GsNormal = GRangeInput.value = GNormalNumInput.value = gammaCompressLinearValue(linearGNormal);
-	BsNormal = BRangeInput.value = BNormalNumInput.value = gammaCompressLinearValue(linearBNormal);
+	linearR = linearRNumInput.value = 255*linearRNormal;
+	linearG = linearGNumInput.value = 255*linearGNormal;
+	linearB = linearBNumInput.value = 255*linearBNormal;
 },
-updateSrgbByDegHY = ()=>{
-	if(degH === null) {
-		Rs = Gs = Bs = RNumInput.value = GNumInput.value = BNumInput.value = gammaCompressLinearValueTo255x(Y);
-		RsNormal = GsNormal = BsNormal = RRangeInput.value = GRangeInput.value = BRangeInput.value = (
-			RNormalNumInput.value = GNormalNumInput.value = BNormalNumInput.value = gammaCompressLinearValue(Y)
-		);
-		return undefined;
-	}
-	calculatePureYSrgbByDegH();
-	if(pureY >= Y) {
-		pureProportion = Y/pureY;
-		linearRNormal = pureLinearRNormal*Y/pureY;
-		linearGNormal = pureLinearGNormal*Y/pureY;
-		linearBNormal = pureLinearBNormal*Y/pureY;
-	} else{
-		pureProportion = (Y - pureY)/(1 - pureY);
-		linearRNormal = pureLinearRNormal + (1 - pureLinearRNormal)*(Y - pureY)/(1 - pureY);
-		linearGNormal = pureLinearGNormal + (1 - pureLinearGNormal)*(Y - pureY)/(1 - pureY);
-		linearBNormal = pureLinearBNormal + (1 - pureLinearBNormal)*(Y - pureY)/(1 - pureY);
-	}
-	Rs = RNumInput.value = gammaCompressLinearValueTo255x(linearRNormal);
-	Gs = GNumInput.value = gammaCompressLinearValueTo255x(linearGNormal);
-	Bs = BNumInput.value = gammaCompressLinearValueTo255x(linearBNormal);
-	RsNormal = RRangeInput.value = RNormalNumInput.value = gammaCompressLinearValue(linearRNormal);
-	GsNormal = GRangeInput.value = GNormalNumInput.value = gammaCompressLinearValue(linearGNormal);
-	BsNormal = BRangeInput.value = BNormalNumInput.value = gammaCompressLinearValue(linearBNormal);
-},
-syncNormalizedH = e=>{
-	if(degHNumInput.checkValidity() === false) return undefined;
-	updateSrgbByHY();
-	updateCodeByNormalizedSrgb();
-},
-syncDegH = e=>{
-	if(degHNumInput.checkValidity() === false) return undefined;
-	updateSrgbByDegHY();
-	updateCodeByNormalizedSrgb();
+syncHsy = e=>{
+	if(e.target.checkValidity() === false) return undefined;
+	updateLinearRgbByHsy();
+	updateSrgbByLinearRgb();
+	updateCodeBySrgb();
 };
 
 let shouldSync = true, outputsLowerCase = false, prefixesColorCode = false,
@@ -939,11 +821,10 @@ Rs = 188, Gs = 188, Bs = 188,
 RsNormal = 0.7372549019607844, GsNormal = 0.7372549019607844, BsNormal = 0.7372549019607844,
 linearR = 128.23604679830493, linearG = 128.23604679830493, linearB = 128.23604679830493,
 linearRNormal = 0.5028864580325684, linearGNormal = 0.5028864580325684, linearBNormal = 0.5028864580325684,
-linearMax = 0.5028864580325684, linearMin = 0.5028864580325684, linearDiff = 0,
-H = null, degH = null, radH = null, minorDegH = null, minorRadH = null, hInterval,
-S = 0, Y = 0.5028864580325684, pureY,
-pureRsNormal, pureGsNormal, pureBsNormal, pureLinearRNormal, pureLinearGNormal, pureLinearBNormal,
-pureProportion;
+linearMax = 0.5028864580325684, linearMid = 0.5028864580325684, linearMin = 0.5028864580325684, linearDiff = 0,
+H = null, degH = null, degHHasPriority = false,
+S = 0, Y = 0.5028864580325684, pureY, pureLinearMid, tmpD,
+pureLinearRNormal, pureLinearGNormal, pureLinearBNormal;
 
 form.addEventListener('submit', e=>{
 	e.preventDefault();
@@ -1019,12 +900,20 @@ addSyncCouldListener(linearBNormalNumInput, syncLinearRgb);
 linearRNormalNumInput.addEventListener('change', syncLinearRgb, eventOptions);
 linearGNormalNumInput.addEventListener('change', syncLinearRgb, eventOptions);
 linearBNormalNumInput.addEventListener('change', syncLinearRgb, eventOptions);
-addSyncCouldListener(degHNumInput, syncDegH);
-addSyncCouldListener(HRangeInput, syncNormalizedH);
-addSyncCouldListener(HNormalNumInput, syncNormalizedH);
-degHNumInput.addEventListener('change', syncDegH, eventOptions);
-HRangeInput.addEventListener('change', syncNormalizedH, eventOptions);
-HNormalNumInput.addEventListener('change', syncNormalizedH, eventOptions);
+addSyncCouldListener(degHNumInput, syncHsy);
+degHNumInput.addEventListener('change', syncHsy, eventOptions);
+addSyncCouldListener(HRangeInput, syncHsy);
+addSyncCouldListener(SRangeInput, syncHsy);
+addSyncCouldListener(YRangeInput, syncHsy);
+HRangeInput.addEventListener('change', syncHsy, eventOptions);
+SRangeInput.addEventListener('change', syncHsy, eventOptions);
+YRangeInput.addEventListener('change', syncHsy, eventOptions);
+addSyncCouldListener(HNormalNumInput, syncHsy);
+addSyncCouldListener(SNumInput, syncHsy);
+addSyncCouldListener(YNumInput, syncHsy);
+HNormalNumInput.addEventListener('change', syncHsy, eventOptions);
+SNumInput.addEventListener('change', syncHsy, eventOptions);
+YNumInput.addEventListener('change', syncHsy, eventOptions);
 
 
 })();
