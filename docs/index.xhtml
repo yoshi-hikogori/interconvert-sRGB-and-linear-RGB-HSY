@@ -97,7 +97,7 @@ body {
 
 <body>
 	<header id="header" class="Header">
-		<p class="Header_text">0.2.1 版、最終更新：2020/06/06</p>
+		<p class="Header_text">1.0.0 版、最終更新：2020/08/09</p>
 	</header>
 		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値・配色属性 HSYの相互変換.xhtml</h1>
 		<p class="Main_beginning">各値を直接またはスライダーでその割合を入力して、<!--
@@ -622,16 +622,17 @@ syncLinearRgb = e=>{
 },
 HToPureYTmpD = [
 	/* pureY = (明度最大の原色の係数) + (明度中間の原色の係数)*(明度中間の原色の、純色での明度)
-	 * tmpD = (明度中間の原色の、純色での明度) - pureY */
+	 * compoundness = 原色から色相がどれだけ離れているか。純色の間色度合い：0〜1
+	 * （未使用）tmpD = (明度中間の原色の、純色での明度) - pureY */
 	()=> {
 		pureLinearRNormal = 1;
-		pureLinearMid = pureLinearGNormal = 6*H;
+		compoundness = pureLinearGNormal = 6*H;
 		pureLinearBNormal = 0;
 		pureY = 0.21263900587151 + 4.2910120726066*H;
 		tmpD = 1.7089879273934*H - 0.21263900587151;
 	},
 	()=> {
-		pureLinearMid = pureLinearRNormal = 2 - 6*H;
+		compoundness = pureLinearRNormal = 2 - 6*H;
 		pureLinearGNormal = 1;
 		pureLinearBNormal = 0;
 		pureY = 1.1404466905108 - 1.2758340352291*H;
@@ -640,19 +641,19 @@ HToPureYTmpD = [
 	()=> {
 		pureLinearRNormal = 0;
 		pureLinearGNormal = 1;
-		pureLinearMid = pureLinearBNormal = 6*H - 2;
+		compoundness = pureLinearBNormal = 6*H - 2;
 		pureY = 0.5707840480463 + 0.4331538921644*H;
 		tmpD = 5.5668461078356*H - 2.5707840480463;
 	},
 	()=> {
 		pureLinearRNormal = 0;
-		pureLinearMid = pureLinearGNormal = 4 - 6*H;
+		compoundness = pureLinearGNormal = 4 - 6*H;
 		pureLinearBNormal = 1;
 		pureY = 2.93286703043177 - 4.2910120726066*H;
 		tmpD = 1.06713296956823 - 1.7089879273934*H;
 	},
 	()=> {
-		pureLinearMid = pureLinearRNormal = 6*H - 4;
+		compoundness = pureLinearRNormal = 6*H - 4;
 		pureLinearGNormal = 0;
 		pureLinearBNormal = 1;
 		pureY = 1.2758340352291*H - 0.77836370812531;
@@ -661,23 +662,23 @@ HToPureYTmpD = [
 	()=> {
 		pureLinearRNormal = 1;
 		pureLinearGNormal = 0;
-		pureLinearMid = pureLinearBNormal = 6 - 6*H;
+		compoundness = pureLinearBNormal = 6 - 6*H;
 		pureY = 0.64579289803589 - 0.4331538921644*H;
 		tmpD = 5.35420710196411 - 5.5668461078356*H;
 	}
 ],
 degHToPureYTmpD = [
 	/* pureY = (明度最大の原色の係数) + (明度中間の原色の係数)*(明度中間の原色の、純色での明度)
-	 * tmpD = (明度中間の原色の、純色での明度) - pureY */
+	 * （未使用）tmpD = (明度中間の原色の、純色での明度) - pureY */
 	()=> {
 		pureLinearRNormal = 1;
-		pureLinearMid = pureLinearGNormal = degH/60;
+		compoundness = pureLinearGNormal = degH/60;
 		pureLinearBNormal = 0;
 		pureY = 0.21263900587151 + 0.71516867876776*degH/60;
 		tmpD = 0.28483132123224*degH/60 - 0.21263900587151;
 	},
 	()=> {
-		pureLinearMid = pureLinearRNormal = 2 - degH/60;
+		compoundness = pureLinearRNormal = 2 - degH/60;
 		pureLinearGNormal = 1;
 		pureLinearBNormal = 0;
 		pureY = 1.14044669051078 - 0.21263900587151*degH/60;
@@ -686,19 +687,19 @@ degHToPureYTmpD = [
 	()=> {
 		pureLinearRNormal = 0;
 		pureLinearGNormal = 1;
-		pureLinearMid = pureLinearBNormal = degH/60 - 2;
+		compoundness = pureLinearBNormal = degH/60 - 2;
 		pureY = 0.5707840480463 + 0.07219231536073*degH/60;
 		tmpD = 0.92780768463927*degH/60 - 2.5707840480463;
 	},
 	()=> {
 		pureLinearRNormal = 0;
-		pureLinearMid = pureLinearGNormal = 4 - degH/60;
+		compoundness = pureLinearGNormal = 4 - degH/60;
 		pureLinearBNormal = 1;
 		pureY = 2.93286703043177 - 0.71516867876776*degH/60;
 		tmpD = 1.06713296956823 - 0.28483132123224*degH/60;
 	},
 	()=> {
-		pureLinearMid = pureLinearRNormal = degH/60 - 4;
+		compoundness = pureLinearRNormal = degH/60 - 4;
 		pureLinearGNormal = 0;
 		pureLinearBNormal = 1;
 		pureY = 0.21263900587151*degH/60 - 0.77836370812531;
@@ -707,20 +708,35 @@ degHToPureYTmpD = [
 	()=> {
 		pureLinearRNormal = 1;
 		pureLinearGNormal = 0;
-		pureLinearMid = pureLinearBNormal = 6 - degH/60;
+		compoundness = pureLinearBNormal = 6 - degH/60;
 		pureY = 0.64579289803589 - 0.07219231536073*degH/60;
 		tmpD = 5.35420710196411 - 0.92780768463927*degH/60;
 	}
 ],
-calculateLinearMaxBySYPureY = ()=>{
-	linearMax = Y + (1 - pureY)*S;
-},
-calculateLinearMidBySYPureYTmpD = ()=>{
-	linearMid = Y + tmpD*S;
-},
-calculateLinearMinBySYPureY = ()=>{
-	linearMin = Y - pureY*S;
-},
+calculationsMaxBySYPureY = new Map([
+	[false, ()=>{
+		linearMax = (Y + (1 - Y)*S)*Y/pureY;
+	}],
+	[true, ()=>{
+		linearMax = 1 - (1 - S)*(1 - Y)*(1 - Y)/(1 - pureY);
+	}]
+]),
+calculationsMidBySYPureYTmpD = new Map([
+	[false, ()=>{
+		linearMid = ((1 - S)*Y + compoundness*S)*Y/pureY;
+	}],
+	[true, ()=>{
+		linearMid = 1 + ((compoundness - Y)*S - (1 - Y))*(1 - Y)/(1 - pureY);
+	}]
+]),
+calculationsMinBySYPureY = new Map([
+	[false, ()=>{
+		linearMin = (1 - S)*Y * Y/pureY;
+	}],
+	[true, ()=>{
+		linearMin = 1 - ((1 - Y) + Y*S)*(1 - Y)/(1 - pureY);
+	}]
+]),
 updateLinearRgbByHsy = ()=>{
 	if(H === null) {
 		linearR = linearG = linearB = linearRNumInput.value = linearGNumInput.value = linearBNumInput.value = 255*Y;
@@ -729,29 +745,30 @@ updateLinearRgbByHsy = ()=>{
 		);
 		return undefined;
 	}
+	isYOverPureY = Y > pureY;
 	if(degHHasPriority === true) {
 		if(degH < 180) {
 			if(degH < 60) {
 				degHToPureYTmpD[0]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value;
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value;
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value;
 			} else if(degH < 120) {
 				degHToPureYTmpD[1]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMax;
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMid;
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMin;
 			} else{
 				degHToPureYTmpD[2]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMax;
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMid;
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMin;
@@ -759,25 +776,25 @@ updateLinearRgbByHsy = ()=>{
 		} else{
 			if(degH < 240) {
 				degHToPureYTmpD[3]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMax;
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMid;
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMin;
 			} else if(degH < 300) {
 				degHToPureYTmpD[4]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMax;
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMid;
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMin;
 			} else{
 				degHToPureYTmpD[5]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMax;
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMid;
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMin;
@@ -787,25 +804,25 @@ updateLinearRgbByHsy = ()=>{
 		if(H < 0.5) {
 			if(H <= 0.16666666666666666) {
 				HToPureYTmpD[0]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMax;
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMid;
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMin;
 			} else if(H <= 0.3333333333333333) {
 				HToPureYTmpD[1]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMax;
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMid;
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMin;
 			} else{
 				HToPureYTmpD[2]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMax;
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMid;
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMin;
@@ -813,25 +830,25 @@ updateLinearRgbByHsy = ()=>{
 		} else{
 			if(H <= 0.6666666666666666) {
 				HToPureYTmpD[3]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMax;
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMid;
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMin;
 			} else if(H < 0.8333333333333334) {
 				HToPureYTmpD[4]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMax;
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMid;
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMin;
 			} else{
 				HToPureYTmpD[5]();
-				calculateLinearMaxBySYPureY();
-				calculateLinearMidBySYPureYTmpD();
-				calculateLinearMinBySYPureY();
+				calculationsMaxBySYPureY.get(isYOverPureY)();
+				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
+				calculationsMinBySYPureY.get(isYOverPureY)();
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMax;
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMid;
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMin;
@@ -859,7 +876,7 @@ linearR = 128.23604679830493, linearG = 128.23604679830493, linearB = 128.236046
 linearRNormal = 0.5028864580325684, linearGNormal = 0.5028864580325684, linearBNormal = 0.5028864580325684,
 linearMax = 0.5028864580325684, linearMid = 0.5028864580325684, linearMin = 0.5028864580325684, linearDiff = 0,
 H = null, degH = null, degHHasPriority = false,
-S = 0, Y = 0.5028864580325684, pureY, pureLinearMid, tmpD,
+S = 0, Y = 0.5028864580325684, pureY, isYOverPureY, compoundness, tmpD,
 pureLinearRNormal, pureLinearGNormal, pureLinearBNormal;
 
 form.addEventListener('submit', e=>{
