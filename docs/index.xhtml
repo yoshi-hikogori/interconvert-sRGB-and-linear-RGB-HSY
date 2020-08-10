@@ -97,9 +97,9 @@ body {
 
 <body>
 	<header id="header" class="Header">
-		<p class="Header_text">1.0.1 版、最終更新：2020/08/09</p>
+		<p class="Header_text">1.0.2 版、最終更新：</p>
 	</header>
-		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値・配色属性 HSYの相互変換.xhtml</h1>
+		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値、配色属性 HSYの相互変換.xhtml</h1>
 		<p class="Main_beginning">各値を直接またはスライダーでその割合を入力して、<!--
 		-->入力された値を満たす他の値を返します</p>
 		<section id="section01" class="MainSection"><h2 class="MainSection_h2">文書内容1</h2>
@@ -171,8 +171,8 @@ body {
 		</fieldset>
 	</form>
 	<footer>
-		<p><small>&#169; 2020 Yoshi Hikogori</small></p>
-		<p><small><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a> に基づいて、この文書を用いる事を許します。<!--
+		<p><small>© 2020 Yoshi Hikogori</small></p>
+		<p><small><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a> に基づいて、その範囲に於いて個別の許し無しにこの文書を用いる事を許します。<!--
 			-->この文書について、用いる事によるいかなる損ないや内容の確度に対して、係る権利者は責任を負いません。
 		</small></p>
 	</footer>
@@ -183,6 +183,9 @@ body {
 globalThis.addEventListener('error', (errorEvent, {message, source, lineno, colno, error, stopPropagation} = errorEvent)=>{
 	globalThis.alert(`${lineno} 行 ${colno} 列, ${error}\n"${message}"\n${source}`);
 }, {passive: true});
+})();
+(()=>{'use strict';
+document.body.getElementsByClassName('Header_text')[0].textContent += new Date(document.lastModified).toLocaleString();
 })();
 (()=>{'use strict';
 
