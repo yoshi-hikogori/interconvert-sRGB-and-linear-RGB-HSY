@@ -97,7 +97,7 @@ body {
 
 <body>
 	<header id="header" class="Header">
-		<p class="Header_text">1.0.2 版、最終更新：</p>
+		<p class="Header_text">1.0.3 版、最終更新：</p>
 	</header>
 		<main class="Main"><h1 class="Main_h1">sRGB 色空間の16進カラーコード・RGB値、線形 RGB 色空間の RGB 値、配色属性 HSYの相互変換.xhtml</h1>
 		<p class="Main_beginning">各値を直接またはスライダーでその割合を入力して、<!--
@@ -171,7 +171,7 @@ body {
 		</fieldset>
 	</form>
 	<footer>
-		<p><small>© 2020 Yoshi Hikogori</small></p>
+		<p><small>© 2020–2021 Yoshi Hikogori</small></p>
 		<p><small><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License 2.0</a> に基づいて、その範囲に於いて個別の許し無しにこの文書を用いる事を許します。<!--
 			-->この文書について、用いる事によるいかなる損ないや内容の確度に対して、係る権利者は責任を負いません。
 		</small></p>
@@ -748,19 +748,20 @@ updateLinearRgbByHsy = ()=>{
 		);
 		return undefined;
 	}
-	isYOverPureY = Y > pureY;
 	if(degHHasPriority === true) {
 		if(degH < 180) {
 			if(degH < 60) {
 				degHToPureYTmpD[0]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
-				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value;
-				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value;
-				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value;
+				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMax;
+				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMid;
+				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMin;
 			} else if(degH < 120) {
 				degHToPureYTmpD[1]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
@@ -769,6 +770,7 @@ updateLinearRgbByHsy = ()=>{
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMin;
 			} else{
 				degHToPureYTmpD[2]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
@@ -779,6 +781,7 @@ updateLinearRgbByHsy = ()=>{
 		} else{
 			if(degH < 240) {
 				degHToPureYTmpD[3]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
@@ -787,6 +790,7 @@ updateLinearRgbByHsy = ()=>{
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMin;
 			} else if(degH < 300) {
 				degHToPureYTmpD[4]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
@@ -795,6 +799,7 @@ updateLinearRgbByHsy = ()=>{
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMin;
 			} else{
 				degHToPureYTmpD[5]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
@@ -807,6 +812,7 @@ updateLinearRgbByHsy = ()=>{
 		if(H < 0.5) {
 			if(H <= 0.16666666666666666) {
 				HToPureYTmpD[0]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
@@ -815,6 +821,7 @@ updateLinearRgbByHsy = ()=>{
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMin;
 			} else if(H <= 0.3333333333333333) {
 				HToPureYTmpD[1]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
@@ -823,6 +830,7 @@ updateLinearRgbByHsy = ()=>{
 				linearBNormal = linearBRangeInput.value = linearBNormalNumInput.value = linearMin;
 			} else{
 				HToPureYTmpD[2]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
@@ -833,6 +841,7 @@ updateLinearRgbByHsy = ()=>{
 		} else{
 			if(H <= 0.6666666666666666) {
 				HToPureYTmpD[3]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
@@ -841,6 +850,7 @@ updateLinearRgbByHsy = ()=>{
 				linearRNormal = linearRRangeInput.value = linearRNormalNumInput.value = linearMin;
 			} else if(H < 0.8333333333333334) {
 				HToPureYTmpD[4]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
@@ -849,6 +859,7 @@ updateLinearRgbByHsy = ()=>{
 				linearGNormal = linearGRangeInput.value = linearGNormalNumInput.value = linearMin;
 			} else{
 				HToPureYTmpD[5]();
+				isYOverPureY = Y > pureY;
 				calculationsMaxBySYPureY.get(isYOverPureY)();
 				calculationsMidBySYPureYTmpD.get(isYOverPureY)();
 				calculationsMinBySYPureY.get(isYOverPureY)();
